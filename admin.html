@@ -63,7 +63,8 @@
       font-size: 14px;
     }
 
-    input, select {
+    input,
+    select {
       width: 100%;
       padding: 13px;
       border: 1px solid #ddd;
@@ -72,7 +73,8 @@
       outline: none;
     }
 
-    input:focus, select:focus {
+    input:focus,
+    select:focus {
       border-color: #111;
     }
 
@@ -102,10 +104,13 @@
       background: #333;
     }
 
-    .share-btn {
+    .link-btn {
       background: #e5e5e5;
       color: #111;
-      display: none;
+    }
+
+    .link-btn:hover {
+      background: #d5d5d5;
     }
 
     .success {
@@ -126,6 +131,11 @@
       border-radius: 8px;
       margin-top: 8px;
       font-size: 13px;
+      color: #222;
+    }
+
+    .section-title {
+      margin-top: 20px;
     }
 
     @media (max-width: 500px) {
@@ -143,28 +153,63 @@
     <p>Admin Panel</p>
   </div>
 
+
   <div class="container">
 
     <!-- TRIP DETAILS -->
     <div class="card">
+
       <h2>Trip Details</h2>
 
-      <label>Trip ID</label>
-      <input id="tripId" value="demo" placeholder="Example: trip001">
+      <label for="tripId">Trip ID</label>
 
-      <label>Trip Status</label>
+      <input
+        id="tripId"
+        placeholder="Example: trip2026"
+      >
+
+
+      <label for="status">Trip Status</label>
+
       <select id="status">
-        <option value="Driver is on the way">Driver is on the way</option>
-        <option value="Driver arrived">Driver arrived</option>
-        <option value="Trip started">Trip started</option>
-        <option value="Trip completed">Trip completed</option>
+
+        <option value="Driver is on the way">
+          Driver is on the way
+        </option>
+
+        <option value="Driver arrived">
+          Driver arrived
+        </option>
+
+        <option value="Trip started">
+          Trip started
+        </option>
+
+        <option value="Trip completed">
+          Trip completed
+        </option>
+
       </select>
 
-      <label>Pickup Location</label>
-      <input id="pickup" placeholder="Example: DHA Phase 6">
 
-      <label>Drop-off Location</label>
-      <input id="dropoff" placeholder="Example: Clifton">
+      <label for="pickup">
+        Pickup Location
+      </label>
+
+      <input
+        id="pickup"
+        placeholder="Example: DHA Phase 6"
+      >
+
+
+      <label for="dropoff">
+        Drop-off Location
+      </label>
+
+      <input
+        id="dropoff"
+        placeholder="Example: Clifton"
+      >
 
     </div>
 
@@ -174,39 +219,101 @@
 
       <h2>Driver Details</h2>
 
-      <label>Driver Name</label>
-      <input id="driverName" placeholder="Example: Muhammad Ali">
 
-      <label>Driver Photo URL</label>
-      <input id="driverPhoto" placeholder="Paste image URL">
+      <label for="driverName">
+        Driver Name
+      </label>
 
-      <label>Vehicle Model</label>
-      <input id="vehicle" placeholder="Example: Toyota Corolla">
+      <input
+        id="driverName"
+        placeholder="Example: Muhammad Ali"
+      >
+
+
+      <label for="driverPhoto">
+        Driver Photo URL
+      </label>
+
+      <input
+        id="driverPhoto"
+        placeholder="Paste image URL"
+      >
+
+
+      <label for="vehicle">
+        Vehicle Model
+      </label>
+
+      <input
+        id="vehicle"
+        placeholder="Example: Toyota Corolla"
+      >
+
 
       <div class="row">
 
         <div>
-          <label>Vehicle Color</label>
-          <input id="vehicleColor" placeholder="Example: White">
+
+          <label for="vehicleColor">
+            Vehicle Color
+          </label>
+
+          <input
+            id="vehicleColor"
+            placeholder="Example: White"
+          >
+
         </div>
 
+
         <div>
-          <label>Plate Number</label>
-          <input id="plate" placeholder="Example: ABC-123">
+
+          <label for="plate">
+            Plate Number
+          </label>
+
+          <input
+            id="plate"
+            placeholder="Example: ABC-123"
+          >
+
         </div>
 
       </div>
 
+
       <div class="row">
 
         <div>
-          <label>Rating</label>
-          <input id="rating" type="number" step="0.1" min="0" max="5" value="5">
+
+          <label for="rating">
+            Rating
+          </label>
+
+          <input
+            id="rating"
+            type="number"
+            step="0.1"
+            min="0"
+            max="5"
+            value="5"
+          >
+
         </div>
 
+
         <div>
-          <label>Phone</label>
-          <input id="phone" type="tel" placeholder="Example: 03XXXXXXXXX">
+
+          <label for="phone">
+            Phone
+          </label>
+
+          <input
+            id="phone"
+            type="tel"
+            placeholder="Example: 03XXXXXXXXX"
+          >
+
         </div>
 
       </div>
@@ -214,40 +321,71 @@
     </div>
 
 
-    <!-- SAVE -->
+    <!-- SAVE AND LINKS -->
     <div class="card">
 
-      <button class="save-btn" onclick="saveTrip()">
+      <button
+        class="save-btn"
+        onclick="saveTrip()"
+      >
         Save Trip
       </button>
 
-      <div id="success" class="success">
 
-        ✅ Trip saved successfully!
+      <div
+        id="success"
+        class="success"
+      >
 
-        <br><br>
+        <strong>
+          ✅ Trip saved successfully!
+        </strong>
 
-        <strong>Driver GPS Link:</strong>
-<div id="driverLink" class="link-box"></div>
 
-<button id="copyDriverBtn" class="share-btn" onclick="copyDriverLink()">
-  🚗 Copy Driver Link
-</button>
+        <div class="section-title">
 
-<br>
+          <strong>
+            🚗 Driver GPS Link
+          </strong>
 
-<strong>Teacher Tracking Link:</strong>
-<div id="trackingLink" class="link-box"></div>
+          <div
+            id="driverLink"
+            class="link-box"
+          >
+          </div>
 
-<button id="copyTrackingBtn" class="share-btn" onclick="copyTrackingLink()">
-  📍 Copy Tracking Link
-</button>
+          <button
+            class="link-btn"
+            onclick="copyDriverLink()"
+          >
+            🚗 Copy Driver Link
+          </button>
+
+        </div>
+
+
+        <div class="section-title">
+
+          <strong>
+            📍 Teacher Tracking Link
+          </strong>
+
+          <div
+            id="trackingLink"
+            class="link-box"
+          >
+          </div>
+
+          <button
+            class="link-btn"
+            onclick="copyTrackingLink()"
+          >
+            📍 Copy Tracking Link
+          </button>
+
+        </div>
 
       </div>
-
-      <button id="shareBtn" class="share-btn" onclick="shareTrip()">
-        Share Tracking Link
-      </button>
 
     </div>
 
@@ -258,30 +396,43 @@
 
   <script type="module">
 
-    import { initializeApp }
-      from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+    import {
+      initializeApp
+    }
+    from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
 
     import {
       getDatabase,
       ref,
       set
     }
-      from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
+
+    /* ----------------------------------
+       FIREBASE CONFIG
+       ---------------------------------- */
 
     const firebaseConfig = {
 
-      apiKey: "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
+      apiKey:
+        "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
 
-      authDomain: "yango-tracking.firebaseapp.com",
+      authDomain:
+        "yango-tracking.firebaseapp.com",
 
-      projectId: "yango-tracking",
+      projectId:
+        "yango-tracking",
 
-      storageBucket: "yango-tracking.firebasestorage.app",
+      storageBucket:
+        "yango-tracking.firebasestorage.app",
 
-      messagingSenderId: "1019473211995",
+      messagingSenderId:
+        "1019473211995",
 
-      appId: "1:1019473211995:web:56a81d2fc43cda8dd5857e",
+      appId:
+        "1:1019473211995:web:56a81d2fc43cda8dd5857e",
 
       databaseURL:
         "https://yango-tracking-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -289,48 +440,103 @@
     };
 
 
-    const app = initializeApp(firebaseConfig);
+    const app =
+      initializeApp(firebaseConfig);
 
-    const database = getDatabase(app);
 
+    const database =
+      getDatabase(app);
+
+
+    /* ----------------------------------
+       SAVE TRIP
+       ---------------------------------- */
 
     window.saveTrip = async function() {
 
       const tripId =
-        document.getElementById("tripId").value.trim();
+        document
+          .getElementById("tripId")
+          .value
+          .trim();
+
 
       const status =
-        document.getElementById("status").value;
+        document
+          .getElementById("status")
+          .value;
+
 
       const pickup =
-        document.getElementById("pickup").value.trim();
+        document
+          .getElementById("pickup")
+          .value
+          .trim();
+
 
       const dropoff =
-        document.getElementById("dropoff").value.trim();
+        document
+          .getElementById("dropoff")
+          .value
+          .trim();
+
 
       const driverName =
-        document.getElementById("driverName").value.trim();
+        document
+          .getElementById("driverName")
+          .value
+          .trim();
+
 
       const driverPhoto =
-        document.getElementById("driverPhoto").value.trim();
+        document
+          .getElementById("driverPhoto")
+          .value
+          .trim();
+
 
       const vehicle =
-        document.getElementById("vehicle").value.trim();
+        document
+          .getElementById("vehicle")
+          .value
+          .trim();
+
 
       const vehicleColor =
-        document.getElementById("vehicleColor").value.trim();
+        document
+          .getElementById("vehicleColor")
+          .value
+          .trim();
+
 
       const plate =
-        document.getElementById("plate").value.trim();
+        document
+          .getElementById("plate")
+          .value
+          .trim();
+
 
       const rating =
-        document.getElementById("rating").value;
+        document
+          .getElementById("rating")
+          .value;
+
 
       const phone =
-        document.getElementById("phone").value.trim();
+        document
+          .getElementById("phone")
+          .value
+          .trim();
 
 
-      if (!tripId || !driverName || !pickup || !dropoff) {
+      /* Check required fields */
+
+      if (
+        !tripId ||
+        !driverName ||
+        !pickup ||
+        !dropoff
+      ) {
 
         alert(
           "Please enter Trip ID, Driver Name, Pickup and Drop-off."
@@ -340,6 +546,8 @@
 
       }
 
+
+      /* Trip data */
 
       const tripData = {
 
@@ -368,36 +576,72 @@
 
       try {
 
+        /* Save trip to Firebase */
+
         await set(
-          ref(database, "trips/" + tripId),
+          ref(
+            database,
+            "trips/" + tripId
+          ),
           tripData
         );
 
 
-        const link =
+        /* ----------------------------------
+           CREATE AUTOMATIC LINKS
+           ---------------------------------- */
+
+        const baseUrl =
           window.location.origin +
           window.location.pathname.replace(
             "admin.html",
             ""
-          ) +
+          );
+
+
+        const driverLink =
+          baseUrl +
+          "driver.html?trip=" +
+          encodeURIComponent(tripId);
+
+
+        const trackingLink =
+          baseUrl +
           "?trip=" +
           encodeURIComponent(tripId);
 
 
-        document.getElementById("trackingLink").textContent =
-          link;
+        /* Show Driver link */
 
-        document.getElementById("success").style.display =
-          "block";
+        document
+          .getElementById("driverLink")
+          .textContent =
+          driverLink;
 
-        document.getElementById("shareBtn").style.display =
+
+        /* Show Teacher link */
+
+        document
+          .getElementById("trackingLink")
+          .textContent =
+          trackingLink;
+
+
+        /* Show success box */
+
+        document
+          .getElementById("success")
+          .style.display =
           "block";
 
 
       } catch (error) {
 
+        console.error(error);
+
         alert(
-          "Could not save trip: " + error.message
+          "Could not save trip: " +
+          error.message
         );
 
       }
@@ -405,37 +649,68 @@
     };
 
 
-    window.shareTrip = async function() {
+    /* ----------------------------------
+       COPY DRIVER LINK
+       ---------------------------------- */
+
+    window.copyDriverLink = async function() {
 
       const link =
-        document.getElementById("trackingLink").textContent;
+        document
+          .getElementById("driverLink")
+          .textContent;
 
 
-      if (navigator.share) {
+      try {
 
-        try {
+        await navigator.clipboard.writeText(
+          link
+        );
 
-          await navigator.share({
+        alert(
+          "🚗 Driver GPS link copied!"
+        );
 
-            title: "Live Trip Tracking",
+      } catch (error) {
 
-            text: "Track this trip live:",
+        prompt(
+          "Copy the Driver GPS link:",
+          link
+        );
 
-            url: link
+      }
 
-          });
+    };
 
-        } catch (error) {
 
-          console.log(error);
+    /* ----------------------------------
+       COPY TEACHER LINK
+       ---------------------------------- */
 
-        }
+    window.copyTrackingLink = async function() {
 
-      } else {
+      const link =
+        document
+          .getElementById("trackingLink")
+          .textContent;
 
-        await navigator.clipboard.writeText(link);
 
-        alert("Tracking link copied!");
+      try {
+
+        await navigator.clipboard.writeText(
+          link
+        );
+
+        alert(
+          "📍 Teacher tracking link copied!"
+        );
+
+      } catch (error) {
+
+        prompt(
+          "Copy the Teacher Tracking link:",
+          link
+        );
 
       }
 
