@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Yango Tracking — Demo</title>
 
-  <link rel="stylesheet"
-        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  >
 
   <style>
     * {
@@ -111,6 +114,13 @@
       align-items: center;
       justify-content: center;
       font-size: 25px;
+      overflow: hidden;
+    }
+
+    .driver-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .driver-name {
@@ -124,11 +134,23 @@
       margin-top: 4px;
     }
 
+    .route {
+      border-top: 1px solid #eee;
+      padding-top: 13px;
+      margin-top: 5px;
+      font-size: 13px;
+    }
+
+    .route div {
+      margin: 7px 0;
+    }
+
     .eta {
       display: flex;
       justify-content: space-between;
       border-top: 1px solid #eee;
       padding-top: 15px;
+      margin-top: 12px;
     }
 
     .eta strong {
@@ -203,27 +225,37 @@
   </div>
 
   <div id="gpsMessage" class="gps-message">
-    Requesting your location...
+    Connecting...
   </div>
 
   <div class="ride-card">
 
     <div class="status">
       <span class="dot"></span>
-      Driver is on the way
+      <span id="status">Driver is on the way</span>
     </div>
 
     <div class="driver">
 
-      <div class="driver-avatar">
+      <div class="driver-avatar" id="driverAvatar">
         🚗
       </div>
 
       <div>
-        <div class="driver-name">Muhammad Ali</div>
-        <div class="vehicle">Toyota Corolla • ABC-123</div>
+        <div class="driver-name" id="driverName">
+          Muhammad Ali
+        </div>
+
+        <div class="vehicle" id="vehicle">
+          Toyota Corolla • ABC-123
+        </div>
       </div>
 
+    </div>
+
+    <div class="route">
+      <div>📍 <strong>Pickup:</strong> <span id="pickup">Pickup location</span></div>
+      <div>🏁 <strong>Drop-off:</strong> <span id="dropoff">Drop-off location</span></div>
     </div>
 
     <div class="eta">
@@ -248,88 +280,280 @@
 
   </div>
 
+
+  <!-- Leaflet -->
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-  <script>
 
-    // Create map
-    const map = L.map('map').setView([24.8607, 67.0011], 13);
+  <!-- Firebase -->
+  <script type="module">
 
-    // OpenStreetMap
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+    import {
+      getDatabase,
+      ref,
+      onValue
+    }
+      from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+
+    /* =====================================
+       YOUR FIREBASE CONFIGURATION
+       ===================================== */
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
+
+      authDomain: "yango-tracking.firebaseapp.com",
+
+      projectId: "yango-tracking",
+
+      storageBucket: "yango-tracking.firebasestorage.app",
+
+      messagingSenderId: "1019473211995",
+
+      appId: "1:1019473211995:web:56a81d2fc43cda8dd5857e",
+
+      databaseURL:
+        "https://yango-tracking-default-rtdb.asia-southeast1.firebasedatabase.app"
+
+    };
+
+
+    /* Start Firebase */
+
+    const app = initializeApp(firebaseConfig);
+
+    const database = getDatabase(app);
+
+
+    /* =====================================
+       TRIP
+       ===================================== */
+
+    const tripId = "demo";
+
+
+    /* =====================================
+       MAP
+       ===================================== */
+
+    const map = L.map("map").setView(
+      [24.8607, 67.0011],
+      13
+    );
+
     L.tileLayer(
-      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       {
         maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
+        attribution: "&copy; OpenStreetMap contributors"
       }
     ).addTo(map);
 
+
+    let driverMarker = null;
     let userMarker = null;
     let accuracyCircle = null;
 
-    function startTracking() {
 
-      const message = document.getElementById("gpsMessage");
+    /* =====================================
+       DRIVER LIVE LOCATION
+       ===================================== */
 
-      message.innerText = "Requesting your GPS location...";
-      message.style.display = "block";
+    const driverLocationRef =
+      ref(database, "trips/" + tripId + "/location");
 
-      if (!navigator.geolocation) {
-        message.innerText = "GPS is not supported by this browser.";
+
+    onValue(driverLocationRef, (snapshot) => {
+
+      const location = snapshot.val();
+
+      if (!location) {
+        console.log("Waiting for driver GPS...");
         return;
       }
+
+      const lat = Number(location.lat);
+      const lng = Number(location.lng);
+
+      if (!driverMarker) {
+
+        driverMarker = L.marker([lat, lng])
+          .addTo(map)
+          .bindPopup("🚗 Driver live location");
+
+      } else {
+
+        driverMarker.setLatLng([lat, lng]);
+
+      }
+
+    });
+
+
+    /* =====================================
+       DRIVER / TRIP DETAILS
+       ===================================== */
+
+    const tripRef =
+      ref(database, "trips/" + tripId);
+
+
+    onValue(tripRef, (snapshot) => {
+
+      const trip = snapshot.val();
+
+      if (!trip) return;
+
+
+      if (trip.driver) {
+
+        document.getElementById("driverName").innerText =
+          trip.driver.name || "Driver";
+
+        document.getElementById("vehicle").innerText =
+          (trip.driver.vehicle || "Vehicle") +
+          " • " +
+          (trip.driver.plate || "No plate");
+
+        if (trip.driver.photo) {
+
+          document.getElementById("driverAvatar").innerHTML =
+            `<img src="${trip.driver.photo}" alt="Driver">`;
+
+        }
+
+      }
+
+
+      if (trip.status) {
+
+        document.getElementById("status").innerText =
+          trip.status;
+
+      }
+
+
+      if (trip.pickup) {
+
+        document.getElementById("pickup").innerText =
+          trip.pickup.name || "Pickup location";
+
+      }
+
+
+      if (trip.dropoff) {
+
+        document.getElementById("dropoff").innerText =
+          trip.dropoff.name || "Drop-off location";
+
+      }
+
+    });
+
+
+    /* =====================================
+       USER'S OWN GPS
+       ===================================== */
+
+    window.startTracking = function() {
+
+      const message =
+        document.getElementById("gpsMessage");
+
+      message.innerText =
+        "Requesting your GPS location...";
+
+      message.style.display = "block";
+
+
+      if (!navigator.geolocation) {
+
+        message.innerText =
+          "GPS is not supported by this browser.";
+
+        return;
+      }
+
 
       navigator.geolocation.watchPosition(
 
         function(position) {
 
-          const lat = position.coords.latitude;
-          const lng = position.coords.longitude;
-          const accuracy = position.coords.accuracy;
+          const lat =
+            position.coords.latitude;
+
+          const lng =
+            position.coords.longitude;
+
+          const accuracy =
+            position.coords.accuracy;
+
 
           if (!userMarker) {
 
-            userMarker = L.marker([lat, lng])
+            userMarker =
+              L.marker([lat, lng])
               .addTo(map)
-              .bindPopup("📍 Your live location")
-              .openPopup();
+              .bindPopup("📍 Your location");
 
-            accuracyCircle = L.circle(
-              [lat, lng],
-              {
-                radius: accuracy
-              }
-            ).addTo(map);
+            accuracyCircle =
+              L.circle(
+                [lat, lng],
+                {
+                  radius: accuracy
+                }
+              )
+              .addTo(map);
 
           } else {
 
             userMarker.setLatLng([lat, lng]);
+
             accuracyCircle.setLatLng([lat, lng]);
+
             accuracyCircle.setRadius(accuracy);
 
           }
 
-          map.setView([lat, lng], 16);
+
+          map.setView(
+            [lat, lng],
+            16
+          );
+
 
           message.innerText =
             "📍 Live GPS location active";
 
           setTimeout(() => {
-            message.style.display = "none";
+
+            message.style.display =
+              "none";
+
           }, 2000);
 
         },
 
         function(error) {
 
-          message.style.display = "block";
+          message.style.display =
+            "block";
 
           if (error.code === 1) {
+
             message.innerText =
               "Location permission was denied.";
+
           } else {
+
             message.innerText =
               "Unable to get your location.";
+
           }
 
         },
@@ -341,18 +565,30 @@
         }
 
       );
-    }
 
-    function shareTrip() {
+    };
 
-      const url = window.location.href;
+
+    /* =====================================
+       SHARE
+       ===================================== */
+
+    window.shareTrip = function() {
+
+      const url =
+        window.location.href;
+
 
       if (navigator.share) {
 
         navigator.share({
+
           title: "Yango Tracking",
+
           text: "Track my ride",
+
           url: url
+
         });
 
       } else {
@@ -363,7 +599,7 @@
 
       }
 
-    }
+    };
 
   </script>
 
