@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Yango Tracking — Admin</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #222;
+    }
+
+    .header {
+      background: #111;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .header p {
+      margin: 6px 0 0;
+      color: #bbb;
+      font-size: 13px;
+    }
+
+    .container {
+      max-width: 650px;
+      margin: 25px auto;
+      padding: 0 15px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 16px;
+      padding: 22px;
+      margin-bottom: 18px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+      margin-top: 0;
+      font-size: 18px;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      margin-bottom: 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #ddd;
+      border-radius: 9px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    input:focus, select:focus {
+      border-color: #111;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 18px;
+    }
+
+    .save-btn {
+      background: #111;
+      color: white;
+    }
+
+    .save-btn:hover {
+      background: #333;
+    }
+
+    .share-btn {
+      background: #e5e5e5;
+      color: #111;
+      display: none;
+    }
+
+    .success {
+      display: none;
+      margin-top: 18px;
+      padding: 15px;
+      background: #e9f8ee;
+      color: #166534;
+      border-radius: 10px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .link-box {
+      word-break: break-all;
+      background: #f4f4f4;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 500px) {
+      .row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="header">
+    <h1>Yango Tracking</h1>
+    <p>Admin Panel</p>
+  </div>
+
+  <div class="container">
+
+    <!-- TRIP DETAILS -->
+    <div class="card">
+      <h2>Trip Details</h2>
+
+      <label>Trip ID</label>
+      <input id="tripId" value="demo" placeholder="Example: trip001">
+
+      <label>Trip Status</label>
+      <select id="status">
+        <option value="Driver is on the way">Driver is on the way</option>
+        <option value="Driver arrived">Driver arrived</option>
+        <option value="Trip started">Trip started</option>
+        <option value="Trip completed">Trip completed</option>
+      </select>
+
+      <label>Pickup Location</label>
+      <input id="pickup" placeholder="Example: DHA Phase 6">
+
+      <label>Drop-off Location</label>
+      <input id="dropoff" placeholder="Example: Clifton">
+
+    </div>
+
+
+    <!-- DRIVER DETAILS -->
+    <div class="card">
+
+      <h2>Driver Details</h2>
+
+      <label>Driver Name</label>
+      <input id="driverName" placeholder="Example: Muhammad Ali">
+
+      <label>Driver Photo URL</label>
+      <input id="driverPhoto" placeholder="Paste image URL">
+
+      <label>Vehicle Model</label>
+      <input id="vehicle" placeholder="Example: Toyota Corolla">
+
+      <div class="row">
+
+        <div>
+          <label>Vehicle Color</label>
+          <input id="vehicleColor" placeholder="Example: White">
+        </div>
+
+        <div>
+          <label>Plate Number</label>
+          <input id="plate" placeholder="Example: ABC-123">
+        </div>
+
+      </div>
+
+      <div class="row">
+
+        <div>
+          <label>Rating</label>
+          <input id="rating" type="number" step="0.1" min="0" max="5" value="5">
+        </div>
+
+        <div>
+          <label>Phone</label>
+          <input id="phone" type="tel" placeholder="Example: 03XXXXXXXXX">
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- SAVE -->
+    <div class="card">
+
+      <button class="save-btn" onclick="saveTrip()">
+        Save Trip
+      </button>
+
+      <div id="success" class="success">
+
+        ✅ Trip saved successfully!
+
+        <br><br>
+
+        <strong>Tracking Link:</strong>
+
+        <div id="trackingLink" class="link-box"></div>
+
+      </div>
+
+      <button id="shareBtn" class="share-btn" onclick="shareTrip()">
+        Share Tracking Link
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <!-- FIREBASE -->
+
+  <script type="module">
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+    import {
+      getDatabase,
+      ref,
+      set
+    }
+      from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
+
+      authDomain: "yango-tracking.firebaseapp.com",
+
+      projectId: "yango-tracking",
+
+      storageBucket: "yango-tracking.firebasestorage.app",
+
+      messagingSenderId: "1019473211995",
+
+      appId: "1:1019473211995:web:56a81d2fc43cda8dd5857e",
+
+      databaseURL:
+        "https://yango-tracking-default-rtdb.asia-southeast1.firebasedatabase.app"
+
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const database = getDatabase(app);
+
+
+    window.saveTrip = async function() {
+
+      const tripId =
+        document.getElementById("tripId").value.trim();
+
+      const status =
+        document.getElementById("status").value;
+
+      const pickup =
+        document.getElementById("pickup").value.trim();
+
+      const dropoff =
+        document.getElementById("dropoff").value.trim();
+
+      const driverName =
+        document.getElementById("driverName").value.trim();
+
+      const driverPhoto =
+        document.getElementById("driverPhoto").value.trim();
+
+      const vehicle =
+        document.getElementById("vehicle").value.trim();
+
+      const vehicleColor =
+        document.getElementById("vehicleColor").value.trim();
+
+      const plate =
+        document.getElementById("plate").value.trim();
+
+      const rating =
+        document.getElementById("rating").value;
+
+      const phone =
+        document.getElementById("phone").value.trim();
+
+
+      if (!tripId || !driverName || !pickup || !dropoff) {
+
+        alert(
+          "Please enter Trip ID, Driver Name, Pickup and Drop-off."
+        );
+
+        return;
+
+      }
+
+
+      const tripData = {
+
+        status: status,
+
+        pickup: pickup,
+
+        dropoff: dropoff,
+
+        driverName: driverName,
+
+        driverPhoto: driverPhoto,
+
+        vehicle: vehicle,
+
+        vehicleColor: vehicleColor,
+
+        plate: plate,
+
+        rating: rating,
+
+        phone: phone
+
+      };
+
+
+      try {
+
+        await set(
+          ref(database, "trips/" + tripId),
+          tripData
+        );
+
+
+        const link =
+          window.location.origin +
+          window.location.pathname.replace(
+            "admin.html",
+            ""
+          ) +
+          "?trip=" +
+          encodeURIComponent(tripId);
+
+
+        document.getElementById("trackingLink").textContent =
+          link;
+
+        document.getElementById("success").style.display =
+          "block";
+
+        document.getElementById("shareBtn").style.display =
+          "block";
+
+
+      } catch (error) {
+
+        alert(
+          "Could not save trip: " + error.message
+        );
+
+      }
+
+    };
+
+
+    window.shareTrip = async function() {
+
+      const link =
+        document.getElementById("trackingLink").textContent;
+
+
+      if (navigator.share) {
+
+        try {
+
+          await navigator.share({
+
+            title: "Live Trip Tracking",
+
+            text: "Track this trip live:",
+
+            url: link
+
+          });
+
+        } catch (error) {
+
+          console.log(error);
+
+        }
+
+      } else {
+
+        await navigator.clipboard.writeText(link);
+
+        alert("Tracking link copied!");
+
+      }
+
+    };
+
+  </script>
+
+</body>
+</html>
