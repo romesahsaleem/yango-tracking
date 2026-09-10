@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Driver GPS — Yango Tracking</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: #f5f5f5;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      width: min(450px, 92%);
+      background: white;
+      margin: 30px auto;
+      padding: 25px;
+      border-radius: 22px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    .demo {
+      color: #777;
+      font-size: 13px;
+      margin-bottom: 25px;
+    }
+
+    .status {
+      padding: 15px;
+      border-radius: 12px;
+      background: #eee;
+      margin: 20px 0;
+      font-weight: bold;
+    }
+
+    .live {
+      background: #dcfce7;
+      color: #166534;
+    }
+
+    button {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 12px;
+      background: #111;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:disabled {
+      background: #aaa;
+    }
+
+    .info {
+      text-align: left;
+      margin-top: 25px;
+      padding: 15px;
+      background: #f7f7f7;
+      border-radius: 12px;
+      line-height: 1.8;
+      font-size: 14px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="card">
+
+    <h1>🚗 Driver GPS</h1>
+
+    <div class="demo">
+      Yango Tracking — Educational Demo
+    </div>
+
+    <div id="status" class="status">
+      GPS is not active
+    </div>
+
+    <button id="startButton" onclick="startGPS()">
+      📍 Start Live GPS
+    </button>
+
+    <div class="info">
+      <strong>Trip ID:</strong> demo<br>
+      <strong>Latitude:</strong> <span id="lat">--</span><br>
+      <strong>Longitude:</strong> <span id="lng">--</span><br>
+      <strong>Accuracy:</strong> <span id="accuracy">--</span> m
+    </div>
+
+  </div>
+
+
+  <script type="module">
+
+    import { initializeApp }
+      from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+    import {
+      getDatabase,
+      ref,
+      set
+    }
+      from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+
+    /* ==============================
+       FIREBASE CONFIG
+       ============================== */
+
+    const firebaseConfig = {
+
+      apiKey: "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
+
+      authDomain: "yango-tracking.firebaseapp.com",
+
+      projectId: "yango-tracking",
+
+      storageBucket: "yango-tracking.firebasestorage.app",
+
+      messagingSenderId: "1019473211995",
+
+      appId: "1:1019473211995:web:56a81d2fc43cda8dd5857e",
+
+      databaseURL:
+        "https://yango-tracking-default-rtdb.asia-southeast1.firebasedatabase.app"
+
+    };
+
+
+    const app = initializeApp(firebaseConfig);
+
+    const database = getDatabase(app);
+
+
+    /* ==============================
+       TRIP ID
+       ============================== */
+
+    const tripId = "demo";
+
+
+    /* ==============================
+       GPS
+       ============================== */
+
+    let watchId = null;
+
+
+    window.startGPS = function() {
+
+      const status =
+        document.getElementById("status");
+
+      const button =
+        document.getElementById("startButton");
+
+
+      if (!navigator.geolocation) {
+
+        status.innerText =
+          "GPS is not supported by this browser.";
+
+        return;
+
+      }
+
+
+      status.innerText =
+        "Requesting GPS permission...";
+
+
+      watchId =
+        navigator.geolocation.watchPosition(
+
+          async function(position) {
+
+            const lat =
+              position.coords.latitude;
+
+            const lng =
+              position.coords.longitude;
+
+            const accuracy =
+              position.coords.accuracy;
+
+
+            /* Show GPS information */
+
+            document.getElementById("lat").innerText =
+              lat.toFixed(6);
+
+            document.getElementById("lng").innerText =
+              lng.toFixed(6);
+
+            document.getElementById("accuracy").innerText =
+              Math.round(accuracy);
+
+
+            /* Update status */
+
+            status.innerText =
+              "🟢 LIVE — GPS is being shared";
+
+            status.className =
+              "status live";
+
+
+            button.disabled = true;
+
+            button.innerText =
+              "📡 GPS Sharing Active";
+
+
+            /* ==============================
+               SEND REAL GPS TO FIREBASE
+               ============================== */
+
+            const locationRef =
+              ref(
+                database,
+                "trips/" + tripId + "/location"
+              );
+
+
+            await set(locationRef, {
+
+              lat: lat,
+
+              lng: lng,
+
+              accuracy: accuracy,
+
+              updatedAt: Date.now()
+
+            });
+
+          },
+
+
+          function(error) {
+
+            status.className =
+              "status";
+
+            if (error.code === 1) {
+
+              status.innerText =
+                "❌ Location permission was denied.";
+
+            } else {
+
+              status.innerText =
+                "❌ Unable to get GPS location.";
+
+            }
+
+          },
+
+
+          {
+            enableHighAccuracy: true,
+
+            maximumAge: 3000,
+
+            timeout: 15000
+
+          }
+
+        );
+
+    };
+
+  </script>
+
+</body>
+</html>
