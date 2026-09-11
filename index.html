@@ -1,1005 +1,1550 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-
-  <title>Yango Tracking</title>
-
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-  />
-
-  <style>
-    * {
-      box-sizing: border-box;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      font-family: Arial, Helvetica, sans-serif;
-      color: #222;
-      background: #eee;
-    }
-
-    #map {
-      position: fixed;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 1;
-    }
-
-    .leaflet-container {
-      background: #eee;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .leaflet-control-attribution {
-      font-size: 9px !important;
-      background: rgba(255,255,255,.82) !important;
-      padding: 2px 5px !important;
-    }
-
-    /* =========================
-       LOGO
-    ========================= */
-
-    .logo {
-      position: fixed;
-      top: 28px;
-      left: 24px;
-      z-index: 1000;
-      font-size: 46px;
-      font-weight: 900;
-      letter-spacing: -3px;
-      color: #e21d2f;
-      pointer-events: none;
-      text-shadow: 0 1px 2px rgba(0,0,0,.08);
-    }
-
-    /* =========================
-       LOCATION BUTTON
-    ========================= */
-
-    .location-button {
-      position: fixed;
-      right: 18px;
-      bottom: calc(55vh + 18px);
-      width: 58px;
-      height: 58px;
-      border: 0;
-      border-radius: 50%;
-      background: #fff;
-      box-shadow: 0 4px 18px rgba(0,0,0,.16);
-      z-index: 1100;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .location-icon {
-      width: 25px;
-      height: 25px;
-      position: relative;
-    }
-
-    .location-icon::before,
-    .location-icon::after {
-      content: "";
-      position: absolute;
-      background: #111;
-    }
-
-    .location-icon::before {
-      width: 3px;
-      height: 25px;
-      left: 11px;
-      top: 0;
-    }
-
-    .location-icon::after {
-      width: 25px;
-      height: 3px;
-      left: 0;
-      top: 11px;
-    }
-
-    .location-icon span {
-      position: absolute;
-      width: 11px;
-      height: 11px;
-      background: #111;
-      transform: rotate(45deg);
-      left: 7px;
-      top: 7px;
-    }
-
-    /* =========================
-       CAR
-    ========================= */
-
-    .car-marker {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      background: #ffd21c;
-      border: 3px solid white;
-      box-shadow:
-        0 3px 10px rgba(0,0,0,.25),
-        0 0 0 1px rgba(0,0,0,.08);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .car-marker svg {
-      width: 31px;
-      height: 31px;
-    }
-
-    /* =========================
-       MAP POINTS
-    ========================= */
-
-    .point-marker {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-size: 17px;
-      font-weight: 800;
-      border: 3px solid #fff;
-      box-shadow: 0 3px 10px rgba(0,0,0,.22);
-    }
-
-    .pickup-marker {
-      background: #e62938;
-    }
-
-    .dropoff-marker {
-      background: #222;
-    }
-
-    /* =========================
-       BOTTOM SHEET
-    ========================= */
-
-    .bottom-sheet {
-      position: fixed;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      height: 52vh;
-      min-height: 390px;
-      max-height: 680px;
-      background: #fff;
-      border-radius: 28px 28px 0 0;
-      z-index: 1000;
-      box-shadow: 0 -5px 25px rgba(0,0,0,.12);
-      overflow-y: auto;
-      overflow-x: hidden;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .handle {
-      width: 74px;
-      height: 7px;
-      border-radius: 10px;
-      background: #c8c8c8;
-      margin: 18px auto 24px;
-    }
-
-    .sheet-header {
-      padding: 0 42px 25px;
-      border-bottom: 1px solid #eee;
-    }
-
-    .status-title {
-      font-size: 31px;
-      line-height: 1.05;
-      font-weight: 800;
-      letter-spacing: -1.3px;
-      margin-bottom: 22px;
-    }
-
-    .vehicle-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      flex-wrap: wrap;
-    }
-
-    .vehicle-name {
-      font-size: 21px;
-      font-weight: 700;
-      color: #666;
-    }
-
-    .plate {
-      padding: 9px 17px;
-      border-radius: 13px;
-      background: #eee;
-      color: #222;
-      font-size: 21px;
-      font-weight: 800;
-      letter-spacing: 1px;
-    }
-
-    .eta-row {
-      padding: 18px 42px;
-      border-bottom: 1px solid #eee;
-      font-size: 18px;
-      color: #666;
-    }
-
-    .eta-row strong {
-      color: #222;
-    }
-
-    .section-title {
-      padding: 28px 42px;
-      background: #f7f7f7;
-      border-bottom: 1px solid #e7e7e7;
-      font-size: 21px;
-      font-weight: 800;
-      color: #555;
-    }
-
-    /* =========================
-       LOCATIONS
-    ========================= */
-
-    .ride-details {
-      padding: 38px 42px 40px;
-      background: #fff;
-    }
-
-    .location-row {
-      display: flex;
-      align-items: flex-start;
-      min-height: 125px;
-    }
-
-    .point-column {
-      width: 72px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-
-    .detail-point {
-      width: 54px;
-      height: 54px;
-      border-radius: 50%;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-size: 21px;
-      font-weight: 800;
-      flex-shrink: 0;
-    }
-
-    .detail-point.pickup {
-      background: #e62938;
-    }
-
-    .detail-point.dropoff {
-      background: #222;
-    }
-
-    .connecting-line {
-      width: 4px;
-      height: 76px;
-      background: #d7d7d7;
-    }
-
-    .location-text {
-      padding-left: 24px;
-      padding-top: 2px;
-    }
-
-    .location-label {
-      font-size: 17px;
-      color: #999;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-      text-transform: uppercase;
-    }
-
-    .location-name {
-      font-size: 19px;
-      font-weight: 750;
-      color: #222;
-      line-height: 1.15;
-    }
-
-    /* =========================
-       DRIVER
-    ========================= */
-
-    .driver-card {
-      padding: 30px 42px;
-      display: flex;
-      align-items: center;
-      gap: 22px;
-      border-bottom: 1px solid #eee;
-    }
-
-    .driver-photo {
-      width: 82px;
-      height: 82px;
-      border-radius: 50%;
-      object-fit: cover;
-      background: #eee;
-      flex-shrink: 0;
-    }
-
-    .driver-info {
-      flex: 1;
-    }
-
-    .driver-name {
-      font-size: 21px;
-      font-weight: 800;
-      margin-bottom: 8px;
-    }
-
-    .driver-rating {
-      font-size: 19px;
-      color: #555;
-    }
-
-    .driver-rating span {
-      color: #f4b400;
-    }
-
-    .info-block {
-      padding: 28px 42px;
-      border-bottom: 1px solid #eee;
-    }
-
-    .info-label {
-      font-size: 16px;
-      color: #999;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-bottom: 8px;
-    }
-
-    .info-value {
-      font-size: 18px;
-      font-weight: 700;
-    }
-
-    /* =========================
-       SHARE
-    ========================= */
-
-    .share-container {
-      padding: 25px 42px 45px;
-    }
-
-    .share-button {
-      width: 100%;
-      border: 0;
-      background: #222;
-      color: #fff;
-      padding: 15px;
-      border-radius: 13px;
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .share-button:active {
-      transform: scale(.99);
-    }
-
-    /* =========================
-       COMPLETED
-    ========================= */
-
-    .completed-box {
-      display: none;
-      margin: 20px 42px 30px;
-      padding: 20px;
-      border-radius: 15px;
-      background: #f1f1f1;
-      font-size: 18px;
-      font-weight: 700;
-      color: #444;
-      text-align: center;
-    }
-
-    /* =========================
-       MOBILE
-    ========================= */
-
-    @media (max-width: 600px) {
-      .logo {
-        top: 48px;
-        left: 25px;
-        font-size: 43px;
-      }
-
-      .location-button {
-        right: 18px;
-        width: 58px;
-        height: 58px;
-      }
-
-      .status-title {
-        font-size: 37px;
-      }
-
-      .vehicle-name {
-        font-size: 25px;
-      }
-
-      .plate {
-        font-size: 19px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .sheet-header,
-      .ride-details,
-      .driver-card,
-      .info-block,
-      .share-container {
-        padding-left: 28px;
-        padding-right: 28px;
-      }
-
-      .section-title {
-        padding-left: 28px;
-        padding-right: 28px;
-      }
-
-      .status-title {
-        font-size: 32px;
-      }
-
-      .vehicle-name {
-        font-size: 22px;
-      }
-
-      .location-name {
-        font-size: 23px;
-      }
-
-      .location-text {
-        padding-left: 15px;
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Yango Tracking</title>
+
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+/>
+
+<style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #fff;
+  color: #111;
+}
+
+/* MAP */
+#map {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* LOGO */
+.logo {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 1000;
+  background: #fff;
+  padding: 9px 14px;
+  border-radius: 10px;
+  box-shadow: 0 3px 15px rgba(0,0,0,.16);
+  font-size: 26px;
+  font-weight: 900;
+  color: #e31837;
+  letter-spacing: -1px;
+}
+
+/* LOCATION BUTTON */
+.location-btn {
+  position: fixed;
+  right: 18px;
+  top: 18px;
+  z-index: 1000;
+  width: 46px;
+  height: 46px;
+  border: none;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 3px 15px rgba(0,0,0,.16);
+  cursor: pointer;
+  font-size: 20px;
+}
+
+/* CAR */
+.car-marker {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 14px rgba(0,0,0,.25);
+  border: 3px solid #e31837;
+}
+
+.car-marker svg {
+  width: 30px;
+  height: 30px;
+}
+
+/* PICKUP / DROPOFF */
+.point-marker {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  box-shadow: 0 3px 12px rgba(0,0,0,.25);
+  border: 2px solid #111;
+}
+
+.point-marker.pickup {
+  border-color: #16a34a;
+}
+
+.point-marker.dropoff {
+  border-color: #e31837;
+}
+
+.point-marker svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* BOTTOM SHEET */
+.bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900;
+  background: #fff;
+  border-radius: 22px 22px 0 0;
+  box-shadow: 0 -5px 25px rgba(0,0,0,.18);
+  height: 52vh;
+  min-height: 390px;
+  max-height: 680px;
+  overflow-y: auto;
+  padding-bottom: 25px;
+}
+
+/* STATUS */
+.status-header {
+  padding: 18px 20px 8px;
+}
+
+.status-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.status-title {
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.status-badge {
+  padding: 7px 11px;
+  border-radius: 20px;
+  background: #f1f1f1;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.status-badge.live {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.status-badge.completed {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* ETA */
+.eta {
+  padding: 3px 20px 16px;
+  font-size: 16px;
+  color: #555;
+}
+
+.eta strong {
+  color: #111;
+}
+
+/* SECTION */
+.section-title {
+  padding: 0 20px 10px;
+  font-size: 13px;
+  color: #777;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .7px;
+}
+
+/* RIDE DETAILS */
+.ride-details {
+  margin: 0 20px 18px;
+  border: 1px solid #eee;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+.ride-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 14px;
+  border-bottom: 1px solid #eee;
+}
+
+.ride-row:last-child {
+  border-bottom: none;
+}
+
+.ride-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.ride-icon.pickup {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.ride-icon.dropoff {
+  background: #fee2e2;
+  color: #dc2626;
+}
+
+.ride-content {
+  min-width: 0;
+}
+
+.ride-label {
+  font-size: 11px;
+  color: #888;
+  margin-bottom: 3px;
+  text-transform: uppercase;
+}
+
+.ride-value {
+  font-size: 16px;
+  font-weight: 700;
+  word-break: break-word;
+}
+
+/* DRIVER */
+.driver-card {
+  margin: 0 20px 18px;
+  padding: 15px;
+  border: 1px solid #eee;
+  border-radius: 15px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.driver-photo {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+  flex-shrink: 0;
+}
+
+.driver-name {
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.driver-rating {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #666;
+}
+
+.driver-rating span {
+  color: #f59e0b;
+  font-weight: 800;
+}
+
+/* INFO GRID */
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin: 0 20px 18px;
+}
+
+.info-box {
+  border: 1px solid #eee;
+  border-radius: 13px;
+  padding: 13px;
+}
+
+.info-label {
+  color: #888;
+  font-size: 11px;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.info-value {
+  font-size: 18px;
+  font-weight: 800;
+  word-break: break-word;
+}
+
+/* SHARE */
+.share-btn {
+  width: calc(100% - 40px);
+  margin: 0 20px 12px;
+  border: none;
+  border-radius: 13px;
+  background: #111;
+  color: #fff;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.share-btn:active {
+  transform: scale(.98);
+}
+
+/* COMPLETED */
+.completed-box {
+  display: none;
+  margin: 0 20px 18px;
+  padding: 15px;
+  border-radius: 13px;
+  background: #fef2f2;
+  color: #991b1b;
+  text-align: center;
+  font-weight: 700;
+}
+
+.completed-box.show {
+  display: block;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+
+  .logo {
+    top: 12px;
+    left: 12px;
+    font-size: 22px;
+    padding: 8px 12px;
+  }
+
+  .location-btn {
+    top: 12px;
+    right: 12px;
+  }
+
+  .bottom-sheet {
+    height: 52vh;
+    min-height: 390px;
+  }
+
+  .status-header {
+    padding: 15px 16px 8px;
+  }
+
+  .eta {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .section-title {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .ride-details,
+  .driver-card,
+  .info-grid {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .share-btn {
+    width: calc(100% - 32px);
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  .completed-box {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <div id="map"></div>
+<div id="map"></div>
 
-  <div class="logo">YANGO</div>
+<div class="logo">YANGO</div>
 
-  <button
-    class="location-button"
-    id="locationButton"
-    aria-label="Center on driver"
-  >
-    <div class="location-icon">
-      <span></span>
-    </div>
-  </button>
+<button class="location-btn" id="locationBtn" title="My location">
+  ⌖
+</button>
 
-  <!-- =========================
-       BOTTOM SHEET
-  ========================== -->
+<div class="bottom-sheet">
 
-  <div class="bottom-sheet">
-
-    <div class="handle"></div>
-
-    <div class="sheet-header">
-
-      <div
-        class="status-title"
-        id="statusTitle"
-      >
-        Driver on the way
+  <div class="status-header">
+    <div class="status-row">
+      <div class="status-title" id="statusTitle">
+        Driver is on the way
       </div>
 
-      <div class="vehicle-row">
+      <div class="status-badge live" id="statusBadge">
+        LIVE
+      </div>
+    </div>
+  </div>
 
-        <div
-          class="vehicle-name"
-          id="vehicleName"
-        >
-          Toyota Corolla
+  <div class="eta" id="etaText">
+    Calculating estimated arrival...
+  </div>
+
+  <div class="section-title">
+    Ride details
+  </div>
+
+  <div class="ride-details">
+
+    <div class="ride-row">
+      <div class="ride-icon pickup">
+        <svg viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v4M12 18v4M2 12h4M18 12h4"></path>
+        </svg>
+      </div>
+
+      <div class="ride-content">
+        <div class="ride-label">Pickup</div>
+        <div class="ride-value" id="pickupText">
+          Loading...
         </div>
+      </div>
+    </div>
 
-        <div
-          class="plate"
-          id="plate"
-        >
-          ABC-123
+    <div class="ride-row">
+      <div class="ride-icon dropoff">
+        <svg viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2">
+          <path d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z"></path>
+          <circle cx="12" cy="9" r="2.5"></circle>
+        </svg>
+      </div>
+
+      <div class="ride-content">
+        <div class="ride-label">Drop-off</div>
+        <div class="ride-value" id="dropoffText">
+          Loading...
         </div>
-
       </div>
-
-    </div>
-
-    <div class="eta-row">
-      <strong id="etaText">
-        Calculating route...
-      </strong>
-    </div>
-
-    <div class="section-title">
-      Ride details
-    </div>
-
-    <div class="ride-details">
-
-      <div class="location-row">
-
-        <div class="point-column">
-
-          <div class="detail-point pickup">
-            P
-          </div>
-
-          <div class="connecting-line"></div>
-
-        </div>
-
-        <div class="location-text">
-
-          <div class="location-label">
-            Pickup
-          </div>
-
-          <div
-            class="location-name"
-            id="pickupName"
-          >
-            Pickup location
-          </div>
-
-        </div>
-
-      </div>
-
-      <div class="location-row">
-
-        <div class="point-column">
-
-          <div class="detail-point dropoff">
-            D
-          </div>
-
-        </div>
-
-        <div class="location-text">
-
-          <div class="location-label">
-            Drop-off
-          </div>
-
-          <div
-            class="location-name"
-            id="dropoffName"
-          >
-            Drop-off location
-          </div>
-
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="section-title">
-      Driver
-    </div>
-
-    <div class="driver-card">
-
-      <img
-        id="driverPhoto"
-        class="driver-photo"
-        src=""
-        alt="Driver"
-      />
-
-      <div class="driver-info">
-
-        <div
-          class="driver-name"
-          id="driverName"
-        >
-          Driver
-        </div>
-
-        <div class="driver-rating">
-          <span>★</span>
-          <span id="driverRating">4.9</span>
-        </div>
-
-      </div>
-
-    </div>
-
-    <div class="info-block">
-
-      <div class="info-label">
-        Vehicle
-      </div>
-
-      <div
-        class="info-value"
-        id="vehicleInfo"
-      >
-        Toyota Corolla
-      </div>
-
-    </div>
-
-    <div class="info-block">
-
-      <div class="info-label">
-        License plate
-      </div>
-
-      <div
-        class="info-value"
-        id="plateInfo"
-      >
-        ABC-123
-      </div>
-
-    </div>
-
-    <div class="share-container">
-
-      <button
-        class="share-button"
-        id="shareButton"
-      >
-        Share trip
-      </button>
-
-    </div>
-
-    <div
-      class="completed-box"
-      id="completedBox"
-    >
-      ✓ This trip has been completed.
     </div>
 
   </div>
 
+  <div class="section-title">
+    Your driver
+  </div>
 
-  <!-- Leaflet -->
+  <div class="driver-card">
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <img
+      id="driverPhoto"
+      class="driver-photo"
+      src=""
+      alt="Driver"
+    >
 
+    <div>
+      <div class="driver-name" id="driverName">
+        Driver
+      </div>
 
-  <!-- Firebase -->
+      <div class="driver-rating">
+        ★ <span id="driverRating">5.0</span>
+      </div>
+    </div>
 
-  <script type="module">
+  </div>
 
-    import {
-      initializeApp
-    } from
-      "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  <div class="info-grid">
 
-    import {
-      getDatabase,
-      ref,
-      onValue
-    } from
-      "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    <div class="info-box">
+      <div class="info-label">Vehicle</div>
+      <div class="info-value" id="vehicleText">
+        —
+      </div>
+    </div>
 
+    <div class="info-box">
+      <div class="info-label">Plate</div>
+      <div class="info-value" id="plateText">
+        —
+      </div>
+    </div>
 
-    /* ==========================================================
-       FIREBASE
-       PASTE YOUR EXISTING FIREBASE API KEY
-    ========================================================== */
+  </div>
 
-    const firebaseConfig = {
+  <div class="completed-box" id="completedBox">
+    ✓ This trip has been completed.
+  </div>
 
-      apiKey:
-        "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
+  <button class="share-btn" id="shareBtn">
+    Share Tracking
+  </button>
 
-      authDomain:
-        "yango-tracking.firebaseapp.com",
+</div>
 
-      projectId:
-        "yango-tracking",
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-      storageBucket:
-        "yango-tracking.firebasestorage.app",
+<script type="module">
 
-      messagingSenderId:
-        "1019473211995",
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
-      appId:
-        "1:1019473211995:web:56a81d2fc43cda8dd5857e",
+import {
+  getDatabase,
+  ref,
+  onValue
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
-      databaseURL:
-        "https://yango-tracking-default-rtdb.asia-southeast1.firebasedatabase.app"
 
-    };
+/* =========================
+   FIREBASE CONFIG
+========================= */
 
+const firebaseConfig = {
 
-    const app =
-      initializeApp(firebaseConfig);
+  apiKey: "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
 
-    const database =
-      getDatabase(app);
+  authDomain:
+    "yango-tracking.firebaseapp.com",
 
+  projectId:
+    "yango-tracking",
 
-    /* ==========================================================
-       TRIP
-    ========================================================== */
+  storageBucket:
+    "yango-tracking.firebasestorage.app",
 
-    const params =
-      new URLSearchParams(
-        window.location.search
-      );
+  messagingSenderId:
+    "1019473211995",
 
-    const tripId =
-      params.get("trip") || "demo";
+  appId:
+    "1:1019473211995:web:56a81d2fc43cda8dd5857e",
 
+  databaseURL:
+    "https://yango-tracking-default-rtdb.asia-southeast1.firebasedatabase.app"
 
-    /* ==========================================================
-       MAP
-    ========================================================== */
+};
 
-    const map =
-      L.map("map", {
-        zoomControl: false,
-        attributionControl: true
-      }).setView(
-        [24.8607, 67.0011],
-        13
-      );
 
+const app = initializeApp(firebaseConfig);
 
-    /*
-      Standard OpenStreetMap tiles.
-      No CARTO key required.
-    */
+const database = getDatabase(app);
 
-    L.tileLayer(
-      "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-      {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap contributors</a>',
 
-        maxZoom: 19,
+/* =========================
+   TRIP ID
+========================= */
 
-        updateWhenZooming: false,
+const urlParams =
+  new URLSearchParams(window.location.search);
 
-        updateWhenIdle: true,
+const tripId =
+  urlParams.get("trip") || "demo";
 
-        referrerPolicy:
-          "strict-origin-when-cross-origin"
-      }
-    ).addTo(map);
 
+/* =========================
+   MAP
+========================= */
 
-    /* ==========================================================
-       VARIABLES
-    ========================================================== */
+const map =
+  L.map("map", {
+    zoomControl: false
+  }).setView(
+    [24.8607, 67.0011],
+    13
+  );
 
-    let carMarker = null;
 
-    let pickupMarker = null;
+L.tileLayer(
+  "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+    attribution:
+      '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap contributors</a>',
 
-    let dropoffMarker = null;
+    maxZoom: 19,
 
-    let routeOutline = null;
+    updateWhenZooming: false,
 
-    let routeInner = null;
+    updateWhenIdle: true,
 
-    let currentDriverPosition = null;
+    referrerPolicy:
+      "strict-origin-when-cross-origin"
+  }
+).addTo(map);
 
-    let pickupPosition = null;
 
-    let dropoffPosition = null;
+/* =========================
+   VARIABLES
+========================= */
 
-    let currentTrip = {};
+let carMarker = null;
 
-    let lastRouteRequest = 0;
+let pickupMarker = null;
 
-    let lastRouteKey = "";
+let dropoffMarker = null;
 
-    let lastRouteCoordinates = null;
+let routeLine = null;
 
-    let lastRouteDuration = null;
+let firstLocation = true;
 
-    let animationFrame = null;
+let currentDriverLocation = null;
 
-    let animationStart = null;
+let pickupLocation = null;
 
-    let animationFrom = null;
+let dropoffLocation = null;
 
-    let animationTo = null;
+let currentStatus = "";
 
-    let firstLocation = true;
 
+/* =========================
+   CAR ICON
+========================= */
 
-    /* ==========================================================
-       CAR ICON
-    ========================================================== */
+const carIcon =
+  L.divIcon({
 
-    const carIcon =
-      L.divIcon({
+    className: "",
 
-        className: "",
+    html: `
+      <div class="car-marker">
 
-        html: `
-          <div class="car-marker">
+        <svg
+          viewBox="0 0 64 64"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
 
-            <svg
-              viewBox="0 0 64 64"
-              xmlns="http://www.w3.org/2000/svg"
-            >
+          <path
+            d="M16 39L20 23C20.7 20.2 23.2 18 26.1 18H37.9C40.8 18 43.3 20.2 44 23L48 39"
+            fill="#e31837"
+          />
 
-              <rect
-                x="12"
-                y="25"
-                width="40"
-                height="22"
-                rx="7"
-                fill="#222"
-              />
+          <rect
+            x="11"
+            y="31"
+            width="42"
+            height="20"
+            rx="6"
+            fill="#e31837"
+          />
 
-              <path
-                d="M19 25 L24 15 H40 L45 25 Z"
-                fill="#222"
-              />
+          <rect
+            x="21"
+            y="22"
+            width="22"
+            height="12"
+            rx="3"
+            fill="#ffffff"
+          />
 
-              <rect
-                x="26"
-                y="18"
-                width="12"
-                height="7"
-                rx="2"
-                fill="#d9e4ea"
-              />
+          <circle
+            cx="20"
+            cy="49"
+            r="5"
+            fill="#111"
+          />
 
-              <circle
-                cx="21"
-                cy="49"
-                r="5"
-                fill="#222"
-              />
+          <circle
+            cx="44"
+            cy="49"
+            r="5"
+            fill="#111"
+          />
 
-              <circle
-                cx="43"
-                cy="49"
-                r="5"
-                fill="#222"
-              />
+          <rect
+            x="15"
+            y="37"
+            width="7"
+            height="4"
+            rx="2"
+            fill="#fff"
+          />
 
-              <rect
-                x="15"
-                y="30"
-                width="6"
-                height="4"
-                rx="2"
-                fill="#ffd21c"
-              />
+          <rect
+            x="42"
+            y="37"
+            width="7"
+            height="4"
+            rx="2"
+            fill="#fff"
+          />
 
-              <rect
-                x="43"
-                y="30"
-                width="6"
-                height="4"
-                rx="2"
-                fill="#ffd21c"
-              />
+        </svg>
 
-            </svg>
+      </div>
+    `,
 
-          </div>
-        `,
+    iconSize: [48, 48],
 
-        iconSize:
-          [54, 54],
+    iconAnchor: [24, 24]
+  });
 
-        iconAnchor:
-          [27, 27]
 
-      });
+/* =========================
+   PICKUP ICON
+========================= */
 
+const pickupIcon =
+  L.divIcon({
 
-    /* ==========================================================
-       PICKUP ICON
-    ========================================================== */
+    className: "",
 
-    const pickupIcon =
-      L.divIcon({
+    html: `
+      <div class="point-marker pickup">
 
-        className: "",
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
 
-        html: `
-          <div class="point-marker pickup-marker">
-            P
-          </div>
-        `,
+          <circle
+            cx="12"
+            cy="12"
+            r="4"
+          ></circle>
 
-        iconSize:
-          [38, 38],
+          <path
+            d="M12 2v4M12 18v4M2 12h4M18 12h4"
+          ></path>
 
-        iconAnchor:
-          [19, 19]
+        </svg>
 
-      });
+      </div>
+    `,
 
+    iconSize: [32, 32],
 
-    /* ==========================================================
-       DROPOFF ICON
-    ========================================================== */
+    iconAnchor: [16, 16]
+  });
 
-    const dropoffIcon =
-      L.divIcon({
 
-        className: "",
+/* =========================
+   DROPOFF ICON
+========================= */
 
-        html: `
-          <div class="point-marker dropoff-marker">
-            D
-          </div>
-        `,
+const dropoffIcon =
+  L.divIcon({
 
-        iconSize:
-          [38, 38],
+    className: "",
 
-        iconAnchor:
-          [19, 19]
+    html: `
+      <div class="point-marker dropoff">
 
-      });
+        <svg
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+        >
 
+          <path
+            d="M12 21s7-6.1 7-12a7 7 0 1 0-14 0c0 5.9 7 12 7 12Z"
+          ></path>
 
-    /* ==========================================================
-       SMOOTH CAR MOVEMENT
-       
-       IMPORTANT:
-       The destination is ALWAYS the newest REAL GPS
-       coordinate received from Firebase.
-    ========================================================== */
+          <circle
+            cx="12"
+            cy="9"
+            r="2.5"
+          ></circle>
 
-    function animateCarTo(
+        </svg>
+
+      </div>
+    `,
+
+    iconSize: [32, 32],
+
+    iconAnchor: [16, 16]
+  });
+
+
+/* =========================
+   CREATE / MOVE CAR
+========================= */
+
+function animateCarTo(
+  lat,
+  lng
+) {
+
+  currentDriverLocation = [
+    lat,
+    lng
+  ];
+
+  if (!carMarker) {
+
+    carMarker =
+      L.marker(
+        [lat, lng],
+        {
+          icon: carIcon,
+          zIndexOffset: 1000
+        }
+      ).addTo(map);
+
+    return;
+  }
+
+
+  const start =
+    carMarker.getLatLng();
+
+
+  const end =
+    L.latLng(
       lat,
       lng
+    );
+
+
+  const duration = 800;
+
+  const startTime =
+    performance.now();
+
+
+  function animate(
+    currentTime
+  ) {
+
+    const progress =
+      Math.min(
+        (currentTime - startTime) /
+        duration,
+        1
+      );
+
+
+    const eased =
+      progress *
+      (2 - progress);
+
+
+    const newLat =
+      start.lat +
+      (end.lat - start.lat) *
+      eased;
+
+
+    const newLng =
+      start.lng +
+      (end.lng - start.lng) *
+      eased;
+
+
+    carMarker.setLatLng([
+      newLat,
+      newLng
+    ]);
+
+
+    if (progress < 1) {
+
+      requestAnimationFrame(
+        animate
+      );
+
+    } else {
+
+      updateMapRoute();
+
+    }
+  }
+
+
+  requestAnimationFrame(
+    animate
+  );
+}
+
+
+/* =========================
+   PICKUP
+========================= */
+
+function updatePickup(
+  lat,
+  lng
+) {
+
+  pickupLocation = [
+    lat,
+    lng
+  ];
+
+
+  if (!pickupMarker) {
+
+    pickupMarker =
+      L.marker(
+        [lat, lng],
+        {
+          icon: pickupIcon
+        }
+      ).addTo(map);
+
+  } else {
+
+    pickupMarker.setLatLng([
+      lat,
+      lng
+    ]);
+
+  }
+
+  updateMapRoute();
+}
+
+
+/* =========================
+   DROPOFF
+========================= */
+
+function updateDropoff(
+  lat,
+  lng
+) {
+
+  dropoffLocation = [
+    lat,
+    lng
+  ];
+
+
+  if (!dropoffMarker) {
+
+    dropoffMarker =
+      L.marker(
+        [lat, lng],
+        {
+          icon: dropoffIcon
+        }
+      ).addTo(map);
+
+  } else {
+
+    dropoffMarker.setLatLng([
+      lat,
+      lng
+    ]);
+
+  }
+
+  updateMapRoute();
+}
+
+
+/* =========================
+   DISTANCE
+========================= */
+
+function calculateDistance(
+  lat1,
+  lng1,
+  lat2,
+  lng2
+) {
+
+  const R =
+    6371;
+
+  const dLat =
+    (lat2 - lat1) *
+    Math.PI / 180;
+
+  const dLng =
+    (lng2 - lng1) *
+    Math.PI / 180;
+
+
+  const a =
+    Math.sin(dLat / 2) *
+    Math.sin(dLat / 2) +
+
+    Math.cos(
+      lat1 *
+      Math.PI / 180
+    ) *
+
+    Math.cos(
+      lat2 *
+      Math.PI / 180
+    ) *
+
+    Math.sin(dLng / 2) *
+    Math.sin(dLng / 2);
+
+
+  const c =
+    2 *
+    Math.atan2(
+      Math.sqrt(a),
+      Math.sqrt(1 - a)
+    );
+
+
+  return R * c;
+}
+
+
+/* =========================
+   ETA
+========================= */
+
+function updateETA() {
+
+  if (
+    !currentDriverLocation
+  ) {
+
+    document.getElementById(
+      "etaText"
+    ).textContent =
+      "Waiting for driver's location...";
+
+    return;
+  }
+
+
+  let destination = null;
+
+
+  if (
+    currentStatus ===
+    "Trip started"
+  ) {
+
+    destination =
+      dropoffLocation;
+
+  } else {
+
+    destination =
+      pickupLocation;
+
+  }
+
+
+  if (!destination) {
+
+    document.getElementById(
+      "etaText"
+    ).textContent =
+      "Location information unavailable.";
+
+    return;
+  }
+
+
+  const distance =
+    calculateDistance(
+      currentDriverLocation[0],
+      currentDriverLocation[1],
+      destination[0],
+      destination[1]
+    );
+
+
+  const averageSpeed =
+    currentStatus ===
+    "Trip started"
+      ? 30
+      : 25;
+
+
+  const minutes =
+    Math.max(
+      1,
+      Math.round(
+        distance /
+        averageSpeed *
+        60
+      )
+    );
+
+
+  document.getElementById(
+    "etaText"
+  ).innerHTML =
+    `<strong>${minutes} min</strong> estimated arrival • ${distance.toFixed(1)} km`;
+}
+
+
+/* =========================
+   ROUTE DESTINATION
+========================= */
+
+function getRouteDestination() {
+
+  if (
+    currentStatus ===
+    "Trip started"
+  ) {
+
+    return dropoffLocation;
+
+  }
+
+  return pickupLocation;
+}
+
+
+/* =========================
+   ROUTE
+========================= */
+
+async function updateMapRoute() {
+
+  if (
+    !currentDriverLocation
+  ) {
+
+    return;
+  }
+
+
+  const destination =
+    getRouteDestination();
+
+
+  if (!destination) {
+
+    return;
+  }
+
+
+  const from =
+    currentDriverLocation;
+
+
+  const to =
+    destination;
+
+
+  const url =
+    `https://router.project-osrm.org/route/v1/driving/${from[1]},${from[0]};${to[1]},${to[0]}?overview=full&geometries=geojson`;
+
+
+  try {
+
+    const response =
+      await fetch(url);
+
+
+    const data =
+      await response.json();
+
+
+    if (
+      !data.routes ||
+      !data.routes.length
     ) {
 
-      const newPosition =
-        [lat, lng];
+      return;
+    }
 
 
-      if (!carMarker) {
+    const coordinates =
+      data.routes[0]
+        .geometry
+        .coordinates
+        .map(
+          point => [
+            point[1],
+            point[0]
+          ]
+        );
+
+
+    if (routeLine) {
+
+      map.removeLayer(
+        routeLine
+      );
+
+    }
+
+
+    routeLine =
+      L.polyline(
+        coordinates,
+        {
+          color: "#fff",
+          weight: 8,
+          opacity: .95
+        }
+      ).addTo(map);
+
+
+    const yellowLine =
+      L.polyline(
+        coordinates,
+        {
+          color: "#facc15",
+          weight: 4,
+          opacity: 1
+        }
+      ).addTo(map);
+
+
+    routeLine.yellowLine =
+      yellowLine;
+
+
+    updateETA();
+
+  } catch (error) {
+
+    console.error(
+      "Route error:",
+      error
+    );
+
+    updateETA();
+
+  }
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+function updateStatus(
+  status
+) {
+
+  currentStatus =
+    status ||
+    "Driver is on the way";
+
+
+  const title =
+    document.getElementById(
+      "statusTitle"
+    );
+
+  const badge =
+    document.getElementById(
+      "statusBadge"
+    );
+
+
+  title.textContent =
+    currentStatus;
+
+
+  badge.classList.remove(
+    "live",
+    "completed"
+  );
+
+
+  if (
+    currentStatus ===
+    "Trip completed"
+  ) {
+
+    badge.textContent =
+      "COMPLETED";
+
+    badge.classList.add(
+      "completed"
+    );
+
+
+    document
+      .getElementById(
+        "completedBox"
+      )
+      .classList.add(
+        "show"
+      );
+
+  } else {
+
+    badge.textContent =
+      "LIVE";
+
+    badge.classList.add(
+      "live"
+    );
+
+    document
+      .getElementById(
+        "completedBox"
+      )
+      .classList.remove(
+        "show"
+      );
+  }
+
+
+  updateETA();
+}
+
+
+/* =========================
+   DRIVER INFO
+========================= */
+
+function updateInformation(
+  trip
+) {
+
+  document.getElementById(
+    "pickupText"
+  ).textContent =
+    trip.pickup ||
+    "Pickup location";
+
+
+  document.getElementById(
+    "dropoffText"
+  ).textContent =
+    trip.dropoff ||
+    "Drop-off location";
+
+
+  document.getElementById(
+    "driverName"
+  ).textContent =
+    trip.driverName ||
+    "Driver";
+
+
+  document.getElementById(
+    "driverRating"
+  ).textContent =
+    trip.rating ||
+    "5.0";
+
+
+  document.getElementById(
+    "vehicleText"
+  ).textContent =
+    trip.vehicle ||
+    "—";
+
+
+  document.getElementById(
+    "plateText"
+  ).textContent =
+    trip.plate ||
+    "—";
+
+
+  const photo =
+    document.getElementById(
+      "driverPhoto"
+    );
+
+
+  if (
+    trip.driverPhoto
+  ) {
+
+    photo.src =
+      trip.driverPhoto;
+
+  } else {
+
+    photo.src =
+      "data:image/svg+xml;charset=UTF-8," +
+      encodeURIComponent(`
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="100"
+          height="100"
+          viewBox="0 0 100 100"
+        >
+
+          <circle
+            cx="50"
+            cy="50"
+            r="50"
+            fill="#eeeeee"
+          />
+
+          <circle
+            cx="50"
+            cy="38"
+            r="17"
+            fill="#999999"
+          />
+
+          <path
+            d="M20 88c4-20 18-30 30-30s26 10 30 30"
+            fill="#999999"
+          />
+
+        </svg>
+      `);
+
+  }
+}
+
+
+/* =========================
+   FIREBASE REALTIME LISTENER
+========================= */
+
+const tripRef =
+  ref(
+    database,
+    `trips/${tripId}`
+  );
+
+
+onValue(
+  tripRef,
+  snapshot => {
+
+    const trip =
+      snapshot.val();
+
+
+    if (!trip) {
+
+      document.getElementById(
+        "statusTitle"
+      ).textContent =
+        "Trip not found";
+
+      document.getElementById(
+        "statusBadge"
+      ).textContent =
+        "ERROR";
+
+      document.getElementById(
+        "statusBadge"
+      ).classList.remove(
+        "live"
+      );
+
+      return;
+    }
+
+
+    updateInformation(
+      trip
+    );
+
+
+    updateStatus(
+      trip.status
+    );
+
+
+    if (
+      trip.pickupLat != null &&
+      trip.pickupLng != null
+    ) {
+
+      updatePickup(
+        Number(trip.pickupLat),
+        Number(trip.pickupLng)
+      );
+
+    }
+
+
+    if (
+      trip.dropoffLat != null &&
+      trip.dropoffLng != null
+    ) {
+
+      updateDropoff(
+        Number(trip.dropoffLat),
+        Number(trip.dropoffLng)
+      );
+
+    }
+
+
+    if (
+      trip.location &&
+      trip.location.lat != null &&
+      trip.location.lng != null
+    ) {
+
+      const lat =
+        Number(
+          trip.location.lat
+        );
+
+
+      const lng =
+        Number(
+          trip.location.lng
+        );
+
+
+      if (
+        !Number.isFinite(lat) ||
+        !Number.isFinite(lng)
+      ) {
+
+        return;
+      }
+
+
+      if (
+        firstLocation
+      ) {
+
+        firstLocation =
+          false;
+
+
+        currentDriverLocation =
+          [lat, lng];
+
 
         carMarker =
           L.marker(
-            newPosition,
+            [lat, lng],
             {
               icon: carIcon,
               zIndexOffset: 1000
@@ -1007,1109 +1552,162 @@
           ).addTo(map);
 
 
-        currentDriverPosition =
-          newPosition;
-
-        return;
-
-      }
-
-
-      if (animationFrame) {
-
-        cancelAnimationFrame(
-          animationFrame
+        map.setView(
+          [lat, lng],
+          15,
+          {
+            animate: true
+          }
         );
 
-      }
 
+        updateMapRoute();
 
-      animationFrom =
-        carMarker
-          .getLatLng();
+      } else {
 
-
-      animationTo =
-        L.latLng(
+        animateCarTo(
           lat,
           lng
         );
 
+      }
 
-      /*
-        Calculate animation duration from
-        the actual GPS distance.
+    }
 
-        Short GPS updates = short animation.
-        Larger updates = slightly longer animation.
-      */
+  },
 
-      const distance =
-        map.distance(
-          animationFrom,
-          animationTo
-        );
+  error => {
 
+    console.error(
+      "Firebase error:",
+      error
+    );
 
-      const duration =
-        Math.min(
-          2200,
-          Math.max(
-            500,
-            distance * 18
-          )
-        );
+  }
+);
 
 
-      animationStart =
-        performance.now();
+/* =========================
+   LOCATION BUTTON
+========================= */
 
+document.getElementById(
+  "locationBtn"
+).addEventListener(
+  "click",
+  () => {
 
-      function animate(
-        timestamp
-      ) {
+    if (
+      currentDriverLocation
+    ) {
 
-        const elapsed =
-          timestamp -
-          animationStart;
-
-
-        const progress =
-          Math.min(
-            elapsed / duration,
-            1
-          );
-
-
-        /*
-          Smooth ease-in/ease-out.
-        */
-
-        const eased =
-          progress < 0.5
-            ? 2 * progress * progress
-            : 1 -
-              Math.pow(
-                -2 * progress + 2,
-                2
-              ) / 2;
-
-
-        const lat =
-          animationFrom.lat +
-          (
-            animationTo.lat -
-            animationFrom.lat
-          ) *
-          eased;
-
-
-        const lng =
-          animationFrom.lng +
-          (
-            animationTo.lng -
-            animationFrom.lng
-          ) *
-          eased;
-
-
-        carMarker.setLatLng(
-          [lat, lng]
-        );
-
-
-        currentDriverPosition =
-          [lat, lng];
-
-
-        if (progress < 1) {
-
-          animationFrame =
-            requestAnimationFrame(
-              animate
-            );
-
-        } else {
-
-          animationFrame =
-            null;
-
-          currentDriverPosition =
-            [lat, lng];
-
-          updateMapRoute();
-
+      map.setView(
+        currentDriverLocation,
+        16,
+        {
+          animate: true
         }
-
-      }
-
-
-      animationFrame =
-        requestAnimationFrame(
-          animate
-        );
+      );
 
     }
 
+  }
+);
 
-    /* ==========================================================
-       PICKUP
-    ========================================================== */
 
-    function updatePickup(
-      lat,
-      lng
+/* =========================
+   SHARE BUTTON
+========================= */
+
+document.getElementById(
+  "shareBtn"
+).addEventListener(
+  "click",
+  async () => {
+
+    const shareUrl =
+      window.location.href;
+
+
+    if (
+      navigator.share
     ) {
-
-      pickupPosition =
-        [lat, lng];
-
-
-      if (!pickupMarker) {
-
-        pickupMarker =
-          L.marker(
-            [lat, lng],
-            {
-              icon: pickupIcon,
-              zIndexOffset: 500
-            }
-          ).addTo(map);
-
-      } else {
-
-        pickupMarker.setLatLng(
-          [lat, lng]
-        );
-
-      }
-
-    }
-
-
-    /* ==========================================================
-       DROPOFF
-    ========================================================== */
-
-    function updateDropoff(
-      lat,
-      lng
-    ) {
-
-      dropoffPosition =
-        [lat, lng];
-
-
-      if (!dropoffMarker) {
-
-        dropoffMarker =
-          L.marker(
-            [lat, lng],
-            {
-              icon: dropoffIcon,
-              zIndexOffset: 500
-            }
-          ).addTo(map);
-
-      } else {
-
-        dropoffMarker.setLatLng(
-          [lat, lng]
-        );
-
-      }
-
-    }
-
-
-    /* ==========================================================
-       DISTANCE
-    ========================================================== */
-
-    function distanceKm(
-      a,
-      b
-    ) {
-
-      const R =
-        6371;
-
-      const dLat =
-        (
-          b[0] -
-          a[0]
-        ) *
-        Math.PI / 180;
-
-      const dLng =
-        (
-          b[1] -
-          a[1]
-        ) *
-        Math.PI / 180;
-
-      const lat1 =
-        a[0] *
-        Math.PI / 180;
-
-      const lat2 =
-        b[0] *
-        Math.PI / 180;
-
-
-      const x =
-        Math.sin(
-          dLat / 2
-        ) *
-        Math.sin(
-          dLat / 2
-        ) +
-
-        Math.sin(
-          dLng / 2
-        ) *
-        Math.sin(
-          dLng / 2
-        ) *
-        Math.cos(lat1) *
-        Math.cos(lat2);
-
-
-      const c =
-        2 *
-        Math.atan2(
-          Math.sqrt(x),
-          Math.sqrt(1 - x)
-        );
-
-
-      return R * c;
-
-    }
-
-
-    /* ==========================================================
-       FALLBACK ETA
-    ========================================================== */
-
-    function fallbackEta(
-      from,
-      to
-    ) {
-
-      if (!from || !to) {
-
-        return "Live location";
-
-      }
-
-
-      const km =
-        distanceKm(
-          from,
-          to
-        );
-
-
-      const minutes =
-        Math.max(
-          2,
-          Math.round(
-            (km / 28) * 60
-          )
-        );
-
-
-      return `${minutes} min away`;
-
-    }
-
-
-    /* ==========================================================
-       ROUTE DESTINATION
-    ========================================================== */
-
-    function getDestination() {
-
-      const status =
-        currentTrip.status || "";
-
-
-      if (
-        status === "Trip started"
-      ) {
-
-        return dropoffPosition;
-
-      }
-
-
-      return pickupPosition;
-
-    }
-
-
-    /* ==========================================================
-       DRAW ROUTE
-    ========================================================== */
-
-    async function drawRoute(
-      from,
-      to
-    ) {
-
-      if (!from || !to) {
-
-        return;
-
-      }
-
-
-      const key =
-        `${from[0].toFixed(4)},${from[1].toFixed(4)}-${to[0].toFixed(4)},${to[1].toFixed(4)}`;
-
-
-      const now =
-        Date.now();
-
-
-      /*
-        Don't repeatedly request the routing server
-        when the car is moving only a tiny amount.
-      */
-
-      if (
-        key === lastRouteKey
-      ) {
-
-        return;
-
-      }
-
-
-      if (
-        now -
-        lastRouteRequest <
-        5000
-      ) {
-
-        return;
-
-      }
-
-
-      lastRouteRequest =
-        now;
-
-
-      lastRouteKey =
-        key;
-
 
       try {
 
-        const url =
-          `https://router.project-osrm.org/route/v1/driving/` +
-          `${from[1]},${from[0]};${to[1]},${to[0]}` +
-          `?overview=full&geometries=geojson`;
+        await navigator.share({
 
+          title:
+            "Track my ride",
 
-        const response =
-          await fetch(url);
+          text:
+            "Track the driver's location in real time.",
 
+          url:
+            shareUrl
 
-        if (!response.ok) {
+        });
 
-          throw new Error(
-            "Route request failed"
-          );
-
-        }
-
-
-        const data =
-          await response.json();
-
-
-        if (
-          !data.routes ||
-          !data.routes.length
-        ) {
-
-          throw new Error(
-            "No route found"
-          );
-
-        }
-
-
-        const route =
-          data.routes[0];
-
-
-        const coordinates =
-          route.geometry.coordinates.map(
-            point => [
-              point[1],
-              point[0]
-            ]
-          );
-
-
-        lastRouteCoordinates =
-          coordinates;
-
-        lastRouteDuration =
-          route.duration;
-
-
-        if (routeOutline) {
-
-          map.removeLayer(
-            routeOutline
-          );
-
-        }
-
-        if (routeInner) {
-
-          map.removeLayer(
-            routeInner
-          );
-
-        }
-
-
-        /*
-          White outline + yellow center
-          gives a clean ride-hailing style.
-        */
-
-        routeOutline =
-          L.polyline(
-            coordinates,
-            {
-              color: "#ffffff",
-              weight: 9,
-              opacity: .95,
-              lineCap: "round",
-              lineJoin: "round"
-            }
-          ).addTo(map);
-
-
-        routeInner =
-          L.polyline(
-            coordinates,
-            {
-              color: "#f3c400",
-              weight: 5,
-              opacity: 1,
-              lineCap: "round",
-              lineJoin: "round"
-            }
-          ).addTo(map);
-
-
-        const minutes =
-          Math.max(
-            1,
-            Math.round(
-              route.duration / 60
-            )
-          );
-
-
-        document.getElementById(
-          "etaText"
-        ).textContent =
-          `${minutes} min away`;
-
-      }
-
-      catch (error) {
+      } catch (error) {
 
         console.log(
-          "Route unavailable:",
-          error
+          "Share cancelled."
+        );
+
+      }
+
+    } else {
+
+      try {
+
+        await navigator.clipboard.writeText(
+          shareUrl
         );
 
 
-        /*
-          Keep the previous real route/ETA
-          instead of flickering.
-        */
+        alert(
+          "Tracking link copied!"
+        );
 
-        if (
-          lastRouteDuration != null
-        ) {
+      } catch (error) {
 
-          const minutes =
-            Math.max(
-              1,
-              Math.round(
-                lastRouteDuration /
-                60
-              )
-            );
-
-
-          document.getElementById(
-            "etaText"
-          ).textContent =
-            `${minutes} min away`;
-
-        } else {
-
-          document.getElementById(
-            "etaText"
-          ).textContent =
-            fallbackEta(
-              from,
-              to
-            );
-
-        }
-
-      }
-
-    }
-
-
-    /* ==========================================================
-       UPDATE ROUTE
-    ========================================================== */
-
-    function updateMapRoute() {
-
-      if (!currentDriverPosition) {
-
-        return;
-
-      }
-
-
-      const destination =
-        getDestination();
-
-
-      if (destination) {
-
-        drawRoute(
-          currentDriverPosition,
-          destination
+        prompt(
+          "Copy this tracking link:",
+          shareUrl
         );
 
       }
 
     }
 
+  }
+);
 
-    /* ==========================================================
-       STATUS
-    ========================================================== */
 
-    function updateStatus() {
+/* =========================
+   MAP RESIZE
+========================= */
 
-      const status =
-        currentTrip.status ||
-        "Driver on the way";
+setTimeout(
+  () => {
 
+    map.invalidateSize();
 
-      document.getElementById(
-        "statusTitle"
-      ).textContent =
-        status;
+  },
+  500
+);
 
 
-      const completedBox =
-        document.getElementById(
-          "completedBox"
-        );
+window.addEventListener(
+  "resize",
+  () => {
 
+    map.invalidateSize();
 
-      if (
-        status === "Trip completed"
-      ) {
+  }
+);
 
-        completedBox.style.display =
-          "block";
-
-
-        document.getElementById(
-          "etaText"
-        ).textContent =
-          "Trip completed";
-
-      } else {
-
-        completedBox.style.display =
-          "none";
-
-      }
-
-    }
-
-
-    /* ==========================================================
-       DRIVER PHOTO FALLBACK
-    ========================================================== */
-
-    function setDriverPhoto(
-      photoUrl
-    ) {
-
-      const photo =
-        document.getElementById(
-          "driverPhoto"
-        );
-
-
-      if (photoUrl) {
-
-        photo.src =
-          photoUrl;
-
-        return;
-
-      }
-
-
-      photo.src =
-        "data:image/svg+xml;charset=UTF-8," +
-        encodeURIComponent(`
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="100"
-            height="100"
-            viewBox="0 0 100 100"
-          >
-
-            <circle
-              cx="50"
-              cy="50"
-              r="50"
-              fill="#eeeeee"
-            />
-
-            <circle
-              cx="50"
-              cy="38"
-              r="17"
-              fill="#bbbbbb"
-            />
-
-            <path
-              d="M22 84
-                 C22 65 34 57 50 57
-                 C66 57 78 65 78 84"
-              fill="#bbbbbb"
-            />
-
-          </svg>
-        `);
-
-    }
-
-
-    /* ==========================================================
-       UPDATE INFORMATION
-    ========================================================== */
-
-    function updateInformation(
-      trip
-    ) {
-
-      currentTrip =
-        trip || {};
-
-
-      document.getElementById(
-        "vehicleName"
-      ).textContent =
-        trip.vehicle ||
-        "Vehicle";
-
-
-      document.getElementById(
-        "vehicleInfo"
-      ).textContent =
-        trip.vehicle ||
-        "Vehicle";
-
-
-      document.getElementById(
-        "plate"
-      ).textContent =
-        trip.plate ||
-        "—";
-
-
-      document.getElementById(
-        "plateInfo"
-      ).textContent =
-        trip.plate ||
-        "—";
-
-
-      document.getElementById(
-        "pickupName"
-      ).textContent =
-        trip.pickup ||
-        "Pickup location";
-
-
-      document.getElementById(
-        "dropoffName"
-      ).textContent =
-        trip.dropoff ||
-        "Drop-off location";
-
-
-      document.getElementById(
-        "driverName"
-      ).textContent =
-        trip.driverName ||
-        "Driver";
-
-
-      document.getElementById(
-        "driverRating"
-      ).textContent =
-        trip.rating ||
-        "4.9";
-
-
-      setDriverPhoto(
-        trip.driverPhoto
-      );
-
-
-      updateStatus();
-
-
-      /*
-        Status can change the route destination
-        from pickup to drop-off.
-      */
-
-      lastRouteKey =
-        "";
-
-      updateMapRoute();
-
-    }
-
-
-    /* ==========================================================
-       FIREBASE
-    ========================================================== */
-
-    const tripRef =
-      ref(
-        database,
-        `trips/${tripId}`
-      );
-
-
-    onValue(
-      tripRef,
-
-      snapshot => {
-
-        const trip =
-          snapshot.val();
-
-
-        if (!trip) {
-
-          document.getElementById(
-            "statusTitle"
-          ).textContent =
-            "Trip not found";
-
-
-          document.getElementById(
-            "etaText"
-          ).textContent =
-            "Waiting for trip information";
-
-
-          return;
-
-        }
-
-
-        updateInformation(
-          trip
-        );
-
-
-        /* =====================
-           PICKUP
-        ===================== */
-
-        if (
-          trip.pickupLat != null &&
-          trip.pickupLng != null
-        ) {
-
-          updatePickup(
-            Number(
-              trip.pickupLat
-            ),
-            Number(
-              trip.pickupLng
-            )
-          );
-
-        }
-
-
-        /* =====================
-           DROPOFF
-        ===================== */
-
-        if (
-          trip.dropoffLat != null &&
-          trip.dropoffLng != null
-        ) {
-
-          updateDropoff(
-            Number(
-              trip.dropoffLat
-            ),
-            Number(
-              trip.dropoffLng
-            )
-          );
-
-        }
-
-
-        /* =====================
-           REAL DRIVER GPS
-        ===================== */
-
-        if (
-          trip.location &&
-          trip.location.lat != null &&
-          trip.location.lng != null
-        ) {
-
-          const lat =
-            Number(
-              trip.location.lat
-            );
-
-          const lng =
-            Number(
-              trip.location.lng
-            );
-
-
-          /*
-            First real GPS location:
-            show immediately and center map.
-          */
-
-          if (
-            firstLocation
-          ) {
-
-            firstLocation =
-              false;
-
-
-            if (!carMarker) {
-
-              carMarker =
-                L.marker(
-                  [lat, lng],
-                  {
-                    icon: carIcon,
-                    zIndexOffset: 1000
-                  }
-                ).addTo(map);
-
-            } else {
-
-              carMarker.setLatLng(
-                [lat, lng]
-              );
-
-            }
-
-
-            currentDriverPosition =
-              [lat, lng];
-
-
-            map.setView(
-              [lat, lng],
-              15,
-              {
-                animate: true
-              }
-            );
-
-
-            updateMapRoute();
-
-          } else {
-
-            /*
-              Every subsequent position is
-              animated smoothly.
-            */
-
-            animateCarTo(
-              lat,
-              lng
-            );
-
-          }
-
-        }
-
-      },
-
-      error => {
-
-        console.error(
-          "Firebase error:",
-          error
-        );
-
-
-        document.getElementById(
-          "statusTitle"
-        ).textContent =
-          "Unable to load trip";
-
-
-        document.getElementById(
-          "etaText"
-        ).textContent =
-          "Check your connection";
-
-      }
-
-    );
-
-
-    /* ==========================================================
-       LOCATION BUTTON
-    ========================================================== */
-
-    document.getElementById(
-      "locationButton"
-    ).addEventListener(
-      "click",
-      () => {
-
-        if (
-          currentDriverPosition
-        ) {
-
-          map.flyTo(
-            currentDriverPosition,
-            16,
-            {
-              duration: .7
-            }
-          );
-
-        }
-
-      }
-    );
-
-
-    /* ==========================================================
-       SHARE
-    ========================================================== */
-
-    document.getElementById(
-      "shareButton"
-    ).addEventListener(
-      "click",
-      async () => {
-
-        const shareUrl =
-          window.location.href;
-
-
-        try {
-
-          if (
-            navigator.share
-          ) {
-
-            await navigator.share({
-
-              title:
-                "Live trip tracking",
-
-              text:
-                "Track this trip live.",
-
-              url:
-                shareUrl
-
-            });
-
-          } else {
-
-            await navigator.clipboard.writeText(
-              shareUrl
-            );
-
-
-            alert(
-              "Tracking link copied."
-            );
-
-          }
-
-        }
-
-        catch (error) {
-
-          console.log(
-            "Share cancelled."
-          );
-
-        }
-
-      }
-    );
-
-
-    /* ==========================================================
-       MAP RESIZE
-    ========================================================== */
-
-    setTimeout(
-      () => {
-
-        map.invalidateSize();
-
-      },
-      500
-    );
-
-
-    window.addEventListener(
-      "resize",
-      () => {
-
-        map.invalidateSize();
-
-      }
-    );
-
-  </script>
+</script>
 
 </body>
 </html>
