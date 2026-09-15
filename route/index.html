@@ -428,6 +428,46 @@
        MOBILE
     ========================= */
 
+    .ride-ended-screen {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      background: #fff;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 32px;
+    }
+
+    .ride-ended-content {
+      width: min(92vw, 430px);
+    }
+
+    .ride-ended-icon {
+      width: 76px; height: 76px; margin: 0 auto 28px;
+      border-radius: 50%; background: #111; color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 38px; font-weight: 800;
+    }
+
+    .ride-ended-title {
+      margin: 0 0 14px; font-size: 36px; line-height: 1.1;
+      font-weight: 800; letter-spacing: -1px; color: #222;
+    }
+
+    .ride-ended-message {
+      margin: 0 auto 30px; max-width: 360px; font-size: 18px;
+      line-height: 1.5; color: #666;
+    }
+
+    .download-app-button {
+      display: flex; width: 100%; min-height: 56px; align-items: center;
+      justify-content: center; border-radius: 15px; background: #e21d2f;
+      color: #fff; text-decoration: none; font-size: 18px; font-weight: 800;
+      box-shadow: 0 5px 18px rgba(226,29,47,.22);
+    }
+
     @media (max-width: 600px) {
       .logo {
         top: 48px;
@@ -692,6 +732,15 @@
 
   </div>
 
+
+  <div class="ride-ended-screen" id="rideEndedScreen">
+    <div class="ride-ended-content">
+      <div class="ride-ended-icon">✓</div>
+      <h1 class="ride-ended-title">Ride has ended</h1>
+      <p class="ride-ended-message">Please download the app to book another ride.</p>
+      <a class="download-app-button" href="https://play.google.com/store/apps/details?id=com.yandex.yango" target="_blank" rel="noopener noreferrer">Download the app</a>
+    </div>
+  </div>
 
   <!-- Leaflet -->
 
@@ -1646,39 +1695,21 @@
         currentTrip.status ||
         "Driver on the way";
 
-
-      document.getElementById(
-        "statusTitle"
-      ).textContent =
-        status;
-
+      const rideEndedScreen =
+        document.getElementById("rideEndedScreen");
 
       const completedBox =
-        document.getElementById(
-          "completedBox"
-        );
+        document.getElementById("completedBox");
 
-
-      if (
-        status === "Trip completed"
-      ) {
-
-        completedBox.style.display =
-          "block";
-
-
-        document.getElementById(
-          "etaText"
-        ).textContent =
-          "Trip completed";
-
-      } else {
-
-        completedBox.style.display =
-          "none";
-
+      if (status === "Trip completed") {
+        rideEndedScreen.style.display = "flex";
+        completedBox.style.display = "none";
+        return;
       }
 
+      rideEndedScreen.style.display = "none";
+      document.getElementById("statusTitle").textContent = status;
+      completedBox.style.display = "none";
     }
 
 
