@@ -1,22 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Yango Tracking - Admin</title>
 
+
   <!-- Leaflet Map -->
+
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   >
+
 
   <style>
 
     * {
       box-sizing: border-box;
     }
+
 
     body {
       margin: 0;
@@ -25,6 +35,7 @@
       color: #111;
     }
 
+
     header {
       background: #000;
       color: white;
@@ -32,22 +43,26 @@
       text-align: center;
     }
 
+
     header h1 {
       margin: 0;
       font-size: 28px;
       letter-spacing: 1px;
     }
 
+
     header p {
       margin: 6px 0 0;
       color: #ccc;
     }
+
 
     .container {
       max-width: 900px;
       margin: 25px auto;
       padding: 0 15px 40px;
     }
+
 
     .card {
       background: white;
@@ -57,16 +72,19 @@
       box-shadow: 0 4px 18px rgba(0,0,0,0.08);
     }
 
+
     h2 {
       margin-top: 0;
       font-size: 20px;
     }
+
 
     label {
       display: block;
       font-weight: bold;
       margin: 14px 0 6px;
     }
+
 
     input,
     select {
@@ -78,10 +96,12 @@
       outline: none;
     }
 
+
     input:focus,
     select:focus {
       border-color: #e00000;
     }
+
 
     button {
       border: none;
@@ -92,6 +112,71 @@
       cursor: pointer;
     }
 
+
+    /* ================================
+       LOGIN
+    ================================= */
+
+    .login-container {
+      max-width: 430px;
+      margin: 60px auto;
+      padding: 0 15px;
+    }
+
+
+    .login-card {
+      background: white;
+      border-radius: 16px;
+      padding: 25px;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    }
+
+
+    .login-card h2 {
+      margin-top: 0;
+    }
+
+
+    .login-card p {
+      color: #666;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+
+    .login-btn {
+      width: 100%;
+      margin-top: 18px;
+      background: #e00000;
+      color: white;
+      font-size: 16px;
+    }
+
+
+    .login-error {
+      display: none;
+      margin-top: 12px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #fff1f1;
+      color: #b00000;
+      font-size: 14px;
+    }
+
+
+    .logout-btn {
+      background: white;
+      color: #111;
+      margin-top: 15px;
+      padding: 9px 15px;
+      font-size: 13px;
+    }
+
+
+    /* ================================
+       MAP
+    ================================= */
+
     .map-buttons {
       display: flex;
       gap: 10px;
@@ -99,20 +184,24 @@
       margin: 15px 0;
     }
 
+
     .pickup-btn {
       background: #111;
       color: white;
     }
+
 
     .dropoff-btn {
       background: #e00000;
       color: white;
     }
 
+
     .clear-btn {
       background: #eee;
       color: #111;
     }
+
 
     #adminMap {
       width: 100%;
@@ -122,6 +211,7 @@
       border: 1px solid #ddd;
     }
 
+
     .status-message {
       background: #f7f7f7;
       border-radius: 10px;
@@ -129,6 +219,7 @@
       margin-bottom: 12px;
       font-size: 14px;
     }
+
 
     .coordinates {
       margin-top: 12px;
@@ -139,11 +230,17 @@
       line-height: 1.7;
     }
 
+
     .section-note {
       color: #666;
       font-size: 14px;
       line-height: 1.5;
     }
+
+
+    /* ================================
+       BUTTONS
+    ================================= */
 
     .save-btn {
       width: 100%;
@@ -154,6 +251,7 @@
       padding: 16px;
     }
 
+
     .complete-btn {
       width: 100%;
       margin-top: 12px;
@@ -163,6 +261,11 @@
       padding: 16px;
     }
 
+
+    /* ================================
+       SUCCESS
+    ================================= */
+
     .success {
       display: none;
       background: #f1fff3;
@@ -171,6 +274,7 @@
       border-radius: 12px;
       margin-top: 20px;
     }
+
 
     .link-box {
       background: white;
@@ -182,12 +286,18 @@
       font-size: 13px;
     }
 
+
     .copy-btn {
       background: #111;
       color: white;
       margin-top: 8px;
       width: 100%;
     }
+
+
+    /* ================================
+       MAP PINS
+    ================================= */
 
     .pin {
       width: 32px;
@@ -203,19 +313,23 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.3);
     }
 
+
     .pickup-pin {
       background: #111;
     }
 
+
     .dropoff-pin {
       background: #e00000;
     }
+
 
     @media (max-width: 600px) {
 
       #adminMap {
         height: 330px;
       }
+
 
       header h1 {
         font-size: 23px;
@@ -224,9 +338,16 @@
     }
 
   </style>
+
 </head>
 
+
 <body>
+
+
+<!-- ================================
+     HEADER
+================================= -->
 
 <header>
 
@@ -234,10 +355,81 @@
 
   <p>Admin Panel</p>
 
+  <button
+    id="logoutButton"
+    class="logout-btn"
+    onclick="logoutAdmin()"
+    style="display:none;"
+  >
+    Logout
+  </button>
+
 </header>
 
 
-<div class="container">
+
+<!-- ================================
+     LOGIN SCREEN
+================================= -->
+
+<div
+  id="loginScreen"
+  class="login-container"
+>
+
+  <div class="login-card">
+
+    <h2>Admin Login</h2>
+
+    <p>
+      Please sign in to access the admin panel.
+    </p>
+
+
+    <input
+      type="email"
+      id="loginEmail"
+      placeholder="Email"
+      autocomplete="email"
+    >
+
+
+    <input
+      type="password"
+      id="loginPassword"
+      placeholder="Password"
+      autocomplete="current-password"
+    >
+
+
+    <button
+      class="login-btn"
+      onclick="loginAdmin()"
+    >
+      Login
+    </button>
+
+
+    <div
+      id="loginError"
+      class="login-error"
+    ></div>
+
+  </div>
+
+</div>
+
+
+
+<!-- ================================
+     ADMIN PANEL
+================================= -->
+
+<div
+  class="container"
+  id="adminPanel"
+  style="display:none;"
+>
 
 
   <!-- ============================= -->
@@ -247,6 +439,7 @@
   <div class="card">
 
     <h2>Trip Details</h2>
+
 
     <label>Trip ID</label>
 
@@ -306,9 +499,12 @@
 
     <h2>Route Locations</h2>
 
+
     <p class="section-note">
+
       Enter the pickup and drop-off names above,
       then select each point on the map.
+
     </p>
 
 
@@ -363,7 +559,9 @@
         Not selected
       </span>
 
+
       <br>
+
 
       <strong>Drop-off coordinates:</strong>
 
@@ -469,9 +667,8 @@
     </button>
 
 
-    <!-- ============================= -->
+
     <!-- LINKS -->
-    <!-- ============================= -->
 
     <div
       id="successBox"
@@ -485,7 +682,9 @@
 
       <div style="margin-top:18px;">
 
-        🚗 <strong>
+        🚗
+
+        <strong>
           Driver GPS Link
         </strong>
 
@@ -510,7 +709,9 @@
 
       <div style="margin-top:22px;">
 
-        📍 <strong>
+        📍
+
+        <strong>
           Teacher Tracking Link
         </strong>
 
@@ -539,25 +740,30 @@
 
 
 
-<!-- ============================= -->
-<!-- LEAFLET -->
-<!-- ============================= -->
+<!-- ================================
+     LEAFLET
+================================= -->
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 
 
+<!-- ================================
+     FIREBASE + JAVASCRIPT
+================================= -->
+
 <script type="module">
 
 
   // ================================
-  // FIREBASE
+  // FIREBASE IMPORTS
   // ================================
 
   import {
     initializeApp
   }
-  from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  from
+    "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
 
   import {
@@ -565,33 +771,55 @@
     ref,
     update
   }
-  from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+  from
+    "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
+
+  import {
+    getAuth,
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signOut
+  }
+  from
+    "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+
+
+  // ================================
+  // FIREBASE CONFIG
+  // ================================
 
   const firebaseConfig = {
 
     /*
       IMPORTANT:
-      Put your SAME existing Firebase API key here.
-      Do not create a new one.
+      Put your existing Firebase API key here.
     */
 
-    apiKey: "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
+    apiKey:
+      "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
+
 
     authDomain:
       "yango-tracking.firebaseapp.com",
 
+
     projectId:
       "yango-tracking",
+
 
     storageBucket:
       "yango-tracking.firebasestorage.app",
 
+
     messagingSenderId:
       "1019473211995",
 
+
     appId:
       "1:1019473211995:web:56a81d2fc43cda8dd5857e",
+
 
     databaseURL:
       "https://yango-tracking-default-rtdb.asia-southeast1.firebasedatabase.app"
@@ -599,12 +827,182 @@
   };
 
 
+
+  // ================================
+  // INITIALIZE FIREBASE
+  // ================================
+
   const app =
     initializeApp(firebaseConfig);
 
 
   const database =
     getDatabase(app);
+
+
+  const auth =
+    getAuth(app);
+
+
+
+  // ================================
+  // ADMIN LOGIN
+  // ================================
+
+  window.loginAdmin =
+    async function() {
+
+
+      const email =
+        document
+          .getElementById("loginEmail")
+          .value
+          .trim();
+
+
+      const password =
+        document
+          .getElementById("loginPassword")
+          .value;
+
+
+      const errorBox =
+        document
+          .getElementById("loginError");
+
+
+      errorBox.style.display =
+        "none";
+
+
+      if (!email || !password) {
+
+        errorBox.innerText =
+          "Please enter your email and password.";
+
+
+        errorBox.style.display =
+          "block";
+
+
+        return;
+
+      }
+
+
+      try {
+
+        await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+
+        errorBox.innerText =
+          "Login failed. Please check your email and password.";
+
+
+        errorBox.style.display =
+          "block";
+
+      }
+
+    };
+
+
+
+  // ================================
+  // LOGOUT
+  // ================================
+
+  window.logoutAdmin =
+    async function() {
+
+      try {
+
+        await signOut(auth);
+
+      }
+
+      catch (error) {
+
+        console.error(error);
+
+        alert(
+          "Could not log out."
+        );
+
+      }
+
+    };
+
+
+
+  // ================================
+  // AUTH STATE
+  // ================================
+
+  onAuthStateChanged(
+    auth,
+    function(user) {
+
+      const loginScreen =
+        document.getElementById(
+          "loginScreen"
+        );
+
+
+      const adminPanel =
+        document.getElementById(
+          "adminPanel"
+        );
+
+
+      const logoutButton =
+        document.getElementById(
+          "logoutButton"
+        );
+
+
+      if (user) {
+
+        loginScreen.style.display =
+          "none";
+
+
+        adminPanel.style.display =
+          "block";
+
+
+        logoutButton.style.display =
+          "inline-block";
+
+      }
+
+      else {
+
+        loginScreen.style.display =
+          "block";
+
+
+        adminPanel.style.display =
+          "none";
+
+
+        logoutButton.style.display =
+          "none";
+
+      }
+
+    }
+  );
 
 
 
@@ -622,10 +1020,12 @@
   L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
+
       maxZoom: 19,
 
       attribution:
         "&copy; OpenStreetMap contributors"
+
     }
   ).addTo(map);
 
@@ -740,6 +1140,7 @@
       const lat =
         event.latlng.lat;
 
+
       const lng =
         event.latlng.lng;
 
@@ -796,7 +1197,8 @@
           "✅ Pickup selected. Now select Drop-off.";
 
 
-        selectionMode = null;
+        selectionMode =
+          null;
 
       }
 
@@ -853,7 +1255,8 @@
           "✅ Drop-off selected successfully.";
 
 
-        selectionMode = null;
+        selectionMode =
+          null;
 
       }
 
@@ -872,6 +1275,7 @@
       pickupLat = null;
 
       pickupLng = null;
+
 
       dropoffLat = null;
 
@@ -1006,7 +1410,9 @@
 
 
 
+      // ================================
       // VALIDATION
+      // ================================
 
       if (!tripId) {
 
@@ -1047,48 +1453,97 @@
 
 
 
-      // DATA
+      // ================================
+      // TRIP DATA
+      // ================================
 
       const tripData = {
 
-        status: status,
+        status:
+          status,
 
-        pickup: pickup,
 
-        dropoff: dropoff,
+        pickup:
+          pickup,
 
+
+        dropoff:
+          dropoff,
+
+
+        /*
+          Keep nested coordinates for compatibility.
+        */
 
         pickupLocation: {
 
-          lat: pickupLat,
+          lat:
+            pickupLat,
 
-          lng: pickupLng
+          lng:
+            pickupLng
 
         },
 
 
         dropoffLocation: {
 
-          lat: dropoffLat,
+          lat:
+            dropoffLat,
 
-          lng: dropoffLng
+          lng:
+            dropoffLng
 
         },
 
 
-        driverName: driverName,
+        /*
+          Also save flat coordinates because
+          the tracking page uses these.
+        */
 
-        driverPhoto: driverPhoto,
+        pickupLat:
+          pickupLat,
 
-        vehicle: vehicle,
 
-        vehicleColor: vehicleColor,
+        pickupLng:
+          pickupLng,
 
-        plate: plate,
 
-        rating: rating,
+        dropoffLat:
+          dropoffLat,
 
-        phone: phone
+
+        dropoffLng:
+          dropoffLng,
+
+
+        driverName:
+          driverName,
+
+
+        driverPhoto:
+          driverPhoto,
+
+
+        vehicle:
+          vehicle,
+
+
+        vehicleColor:
+          vehicleColor,
+
+
+        plate:
+          plate,
+
+
+        rating:
+          rating,
+
+
+        phone:
+          phone
 
       };
 
@@ -1098,8 +1553,7 @@
 
         /*
           update() is intentional.
-          It preserves the driver's existing
-          live GPS location.
+          It preserves existing live GPS data.
         */
 
         await update(
@@ -1112,7 +1566,9 @@
 
 
 
+        // ================================
         // LINKS
+        // ================================
 
         const baseUrl =
           window.location.origin +
@@ -1163,8 +1619,8 @@
             behavior: "smooth"
           });
 
-
       }
+
 
       catch (error) {
 
@@ -1234,8 +1690,10 @@
             status:
               "Trip completed",
 
+
             completedAt:
               Date.now(),
+
 
             sharingActive:
               false
@@ -1249,6 +1707,7 @@
         );
 
       }
+
 
       catch (error) {
 
@@ -1282,6 +1741,7 @@
       navigator.clipboard
         .writeText(link)
 
+
         .then(
           function() {
 
@@ -1291,6 +1751,7 @@
 
           }
         )
+
 
         .catch(
           function() {
@@ -1324,6 +1785,7 @@
       navigator.clipboard
         .writeText(link)
 
+
         .then(
           function() {
 
@@ -1333,6 +1795,7 @@
 
           }
         )
+
 
         .catch(
           function() {
@@ -1350,5 +1813,7 @@
 
 </script>
 
+
 </body>
+
 </html>
