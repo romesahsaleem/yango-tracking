@@ -394,5 +394,1051 @@
 
     <input
       id="vehicle"
-      placeholder="Example: Toyo
+      placeholder="Example: Toyota Corolla"
+    >
+
+
+    <label>Vehicle Color</label>
+
+    <input
+      id="vehicleColor"
+      placeholder="Example: White"
+    >
+
+
+    <label>Plate Number</label>
+
+    <input
+      id="plate"
+      placeholder="Example: ABC-123"
+    >
+
+
+    <label>Rating</label>
+
+    <input
+      id="rating"
+      placeholder="Example: 4.9"
+    >
+
+
+    <label>Phone</label>
+
+    <input
+      id="phone"
+      placeholder="Example: 03001234567"
+    >
+
+  </div>
+
+
+  <!-- SAVE -->
+
+  <div class="card">
+
+    <button
+      type="button"
+      class="save-btn"
+      onclick="saveTrip()"
+    >
+      Save Trip
+    </button>
+
+
+    <button
+      type="button"
+      class="complete-btn"
+      onclick="completeRide()"
+    >
+      🏁 Complete Ride
+    </button>
+
+
+    <div id="successBox" class="success">
+
+      <strong>Trip saved successfully!</strong>
+
+      <p>
+        Driver Link:
+        <br>
+        <a id="driverLink" target="_blank"></a>
+      </p>
+
+      <p>
+        Teacher Tracking Link:
+        <br>
+        <a id="teacherLink" target="_blank"></a>
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+
+<script type="module">
+
+/* =========================
+   FIREBASE
+========================= */
+
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+
+import {
+  getDatabase,
+  ref,
+  update,
+  get
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+
+/* YOUR FIREBASE CONFIG */
+
+const firebaseConfig = {
+
+  apiKey:
+    "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
+
+  authDomain:
+    "yango-tracking.firebaseapp.com",
+
+  projectId:
+    "yango-tracking",
+
+  storageBucket:
+    "yango-tracking.firebasestorage.app",
+
+  messagingSenderId:
+    "1019473211995",
+
+  appId:
+    "1:1019473211995:web:56a81d2fc43cda8dd5857e",
+
+  databaseURL:
+    "https://yango-tracking-default-rtdb.asia-southeast1.firebasedatabase.app"
+
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const database = getDatabase(app);
+
+const auth = getAuth(app);
+
+
+/* =========================
+   MAP
+========================= */
+
+const map = L.map("adminMap").setView(
+  [24.8607, 67.0011],
+  12
+);
+
+
+L.tileLayer(
+  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+  {
+    maxZoom: 19,
+    attribution: "&copy; OpenStreetMap"
+  }
+).addTo(map);
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let selectionMode = null;
+
+let pickupLat = null;
+let pickupLng = null;
+
+let dropoffLat = null;
+let dropoffLng = null;
+
+let pickupMarker = null;
+let dropoffMarker = null;
+
+
+/* =========================
+   SET PICKUP
+========================= */
+
+window.selectPickup = function() {
+
+  selectionMode = "pickup";
+
+  document.getElementById("mapStatus").innerText =
+    "📍 Click anywhere on the map to set the Pickup point.";
+
+};
+
+
+/* =========================
+   SET DROP-OFF
+========================= */
+
+window.selectDropoff = function() {
+
+  selectionMode = "dropoff";
+
+  document.getElementById("mapStatus").innerText =
+    "🔴 Click anywhere on the map to set the Drop-off point.";
+
+};
+
+
+/* =========================
+   MAP CLICK
+========================= */
+
+map.on("click", function(event) {
+
+  const lat = event.latlng.lat;
+  const lng = event.latlng.lng;
+
+
+  if (selectionMode === "pickup") {
+
+    pickupLat = lat;
+    pickupLng = lng;
+
+
+    if (pickupMarker) {
+      map.removeLayer(pickupMarker);
+    }
+
+
+    pickupMarker = L.marker(
+      [lat, lng]
+    ).addTo(map);
+
+
+    pickupMarker.bindPopup(
+      "<b>Pickup</b>"
+    ).openPopup();
+
+
+    document.getElementById("pickupCoords").innerText =
+      lat.toFixed(6) + ", " + lng.toFixed(6);
+
+
+    document.getElementById("mapStatus").innerText =
+      "✅ Pickup point selected.";
+
+    selectionMode = null;
+
+  }
+
+
+  else if (selectionMode === "dropoff") {
+
+    dropoffLat = lat;
+    dropoffLng = lng;
+
+
+    if (dropoffMarker) {
+      map.removeLayer(dropoffMarker);
+    }
+
+
+    dropoffMarker = L.marker(
+      [lat, lng]
+    ).addTo(map);
+
+
+    dropoffMarker.bindPopup(
+      "<b>Drop-off</b>"
+    ).openPopup();
+
+
+    document.getElementById("dropoffCoords").innerText =
+      lat.toFixed(6) + ", " + lng.toFixed(6);
+
+
+    document.getElementById("mapStatus").innerText =
+      "✅ Drop-off point selected.";
+
+    selectionMode = null;
+
+  }
+
+});
+
+
+/* =========================
+   CLEAR MAP
+========================= */
+
+window.clearLocations = function() {
+
+  pickupLat = null;
+  pickupLng = null;
+
+  dropoffLat = null;
+  dropoffLng = null;
+
+
+  if (pickupMarker) {
+
+    map.removeLayer(pickupMarker);
+
+    pickupMarker = null;
+
+  }
+
+
+  if (dropoffMarker) {
+
+    map.removeLayer(dropoffMarker);
+
+    dropoffMarker = null;
+
+  }
+
+
+  document.getElementById("pickupCoords").innerText =
+    "Not selected";
+
+
+  document.getElementById("dropoffCoords").innerText =
+    "Not selected";
+
+
+  document.getElementById("mapStatus").innerText =
+    "Select Pickup or Drop-off, then click the map.";
+
+};
+
+
+/* =========================
+   RESTORE MAP MARKERS
+========================= */
+
+function restoreMarkers() {
+
+  if (pickupMarker) {
+
+    map.removeLayer(pickupMarker);
+
+    pickupMarker = null;
+
+  }
+
+
+  if (dropoffMarker) {
+
+    map.removeLayer(dropoffMarker);
+
+    dropoffMarker = null;
+
+  }
+
+
+  const points = [];
+
+
+  if (
+    typeof pickupLat === "number" &&
+    typeof pickupLng === "number"
+  ) {
+
+    pickupMarker = L.marker(
+      [pickupLat, pickupLng]
+    ).addTo(map);
+
+    pickupMarker.bindPopup(
+      "<b>Pickup</b>"
+    );
+
+    document.getElementById("pickupCoords").innerText =
+      pickupLat.toFixed(6) +
+      ", " +
+      pickupLng.toFixed(6);
+
+    points.push(
+      [pickupLat, pickupLng]
+    );
+
+  }
+  else {
+
+    document.getElementById("pickupCoords").innerText =
+      "Not selected";
+
+  }
+
+
+  if (
+    typeof dropoffLat === "number" &&
+    typeof dropoffLng === "number"
+  ) {
+
+    dropoffMarker = L.marker(
+      [dropoffLat, dropoffLng]
+    ).addTo(map);
+
+    dropoffMarker.bindPopup(
+      "<b>Drop-off</b>"
+    );
+
+    document.getElementById("dropoffCoords").innerText =
+      dropoffLat.toFixed(6) +
+      ", " +
+      dropoffLng.toFixed(6);
+
+    points.push(
+      [dropoffLat, dropoffLng]
+    );
+
+  }
+  else {
+
+    document.getElementById("dropoffCoords").innerText =
+      "Not selected";
+
+  }
+
+
+  if (points.length === 2) {
+
+    map.fitBounds(points, {
+      padding: [40, 40]
+    });
+
+  }
+
+  else if (points.length === 1) {
+
+    map.setView(
+      points[0],
+      14
+    );
+
+  }
+
+}
+
+
+/* =========================
+   SHOW LINKS
+========================= */
+
+function showLinks(tripId) {
+
+  const driverLink =
+    window.location.origin +
+    window.location.pathname.replace(
+      "admin.html",
+      "driver.html"
+    ) +
+    "?trip=" +
+    encodeURIComponent(tripId);
+
+
+  const teacherLink =
+    window.location.origin +
+    window.location.pathname.replace(
+      "admin.html",
+      ""
+    ) +
+    "?trip=" +
+    encodeURIComponent(tripId);
+
+
+  document.getElementById("driverLink").href =
+    driverLink;
+
+  document.getElementById("driverLink").innerText =
+    driverLink;
+
+
+  document.getElementById("teacherLink").href =
+    teacherLink;
+
+  document.getElementById("teacherLink").innerText =
+    teacherLink;
+
+
+  document.getElementById("successBox").style.display =
+    "block";
+
+}
+
+
+/* =========================
+   RESTORE TRIP
+========================= */
+
+async function restoreTrip(tripId) {
+
+  if (!tripId) return;
+
+
+  try {
+
+    const snapshot = await get(
+      ref(database, "trips/" + tripId)
+    );
+
+
+    if (!snapshot.exists()) {
+
+      return;
+
+    }
+
+
+    const data = snapshot.val();
+
+
+    document.getElementById("tripId").value =
+      tripId;
+
+
+    document.getElementById("status").value =
+      data.status || "Driver is on the way";
+
+
+    document.getElementById("pickup").value =
+      data.pickup || "";
+
+
+    document.getElementById("dropoff").value =
+      data.dropoff || "";
+
+
+    document.getElementById("driverName").value =
+      data.driverName || "";
+
+
+    document.getElementById("driverPhoto").value =
+      data.driverPhoto || "";
+
+
+    document.getElementById("vehicle").value =
+      data.vehicle || "";
+
+
+    document.getElementById("vehicleColor").value =
+      data.vehicleColor || "";
+
+
+    document.getElementById("plate").value =
+      data.plate || "";
+
+
+    document.getElementById("rating").value =
+      data.rating || "";
+
+
+    document.getElementById("phone").value =
+      data.phone || "";
+
+
+    /* RESTORE PICKUP */
+
+    pickupLat =
+      data.pickupLat ??
+      data.pickupLatitude ??
+      data.pickupLocation?.lat ??
+      null;
+
+
+    pickupLng =
+      data.pickupLng ??
+      data.pickupLongitude ??
+      data.pickupLocation?.lng ??
+      null;
+
+
+    /* RESTORE DROP-OFF */
+
+    dropoffLat =
+      data.dropoffLat ??
+      data.dropoffLatitude ??
+      data.dropOffLatitude ??
+      data.dropoffLocation?.lat ??
+      data.dropOffLocation?.lat ??
+      null;
+
+
+    dropoffLng =
+      data.dropoffLng ??
+      data.dropoffLongitude ??
+      data.dropOffLongitude ??
+      data.dropoffLocation?.lng ??
+      data.dropOffLocation?.lng ??
+      null;
+
+
+    restoreMarkers();
+
+
+    showLinks(tripId);
+
+
+    document.getElementById("mapStatus").innerText =
+      "✅ Current trip restored automatically.";
+
+
+    setTimeout(function() {
+
+      map.invalidateSize();
+
+    }, 300);
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Error restoring trip:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================
+   RESTORE CURRENT TRIP
+========================= */
+
+async function restoreCurrentTrip() {
+
+  try {
+
+    const stateSnapshot = await get(
+      ref(database, "adminState/lastTripId")
+    );
+
+
+    if (
+      stateSnapshot.exists() &&
+      stateSnapshot.val()
+    ) {
+
+      await restoreTrip(
+        stateSnapshot.val()
+      );
+
+    }
+
+  }
+
+  catch (error) {
+
+    console.error(
+      "Error restoring current trip:",
+      error
+    );
+
+  }
+
+}
+
+
+/* =========================
+   SAVE TRIP
+========================= */
+
+window.saveTrip = async function() {
+
+  const tripId =
+    document.getElementById("tripId").value.trim();
+
+
+  const status =
+    document.getElementById("status").value;
+
+
+  const pickup =
+    document.getElementById("pickup").value.trim();
+
+
+  const dropoff =
+    document.getElementById("dropoff").value.trim();
+
+
+  const driverName =
+    document.getElementById("driverName").value.trim();
+
+
+  const driverPhoto =
+    document.getElementById("driverPhoto").value.trim();
+
+
+  const vehicle =
+    document.getElementById("vehicle").value.trim();
+
+
+  const vehicleColor =
+    document.getElementById("vehicleColor").value.trim();
+
+
+  const plate =
+    document.getElementById("plate").value.trim();
+
+
+  const rating =
+    document.getElementById("rating").value.trim();
+
+
+  const phone =
+    document.getElementById("phone").value.trim();
+
+
+  /* VALIDATION */
+
+  if (!tripId) {
+
+    alert("Please enter a Trip ID.");
+
+    return;
+
+  }
+
+
+  if (!pickup) {
+
+    alert("Please enter the pickup location name.");
+
+    return;
+
+  }
+
+
+  if (!dropoff) {
+
+    alert("Please enter the drop-off location name.");
+
+    return;
+
+  }
+
+
+  if (
+    pickupLat === null ||
+    pickupLng === null
+  ) {
+
+    alert("Please set the Pickup point on the map.");
+
+    return;
+
+  }
+
+
+  if (
+    dropoffLat === null ||
+    dropoffLng === null
+  ) {
+
+    alert("Please set the Drop-off point on the map.");
+
+    return;
+
+  }
+
+
+  try {
+
+    const tripData = {
+
+      status: status,
+
+      pickup: pickup,
+
+      dropoff: dropoff,
+
+
+      pickupLocation: {
+
+        lat: pickupLat,
+        lng: pickupLng
+
+      },
+
+
+      dropoffLocation: {
+
+        lat: dropoffLat,
+        lng: dropoffLng
+
+      },
+
+
+      pickupLat: pickupLat,
+      pickupLng: pickupLng,
+
+      dropoffLat: dropoffLat,
+      dropoffLng: dropoffLng,
+
+
+      driverName: driverName,
+
+      driverPhoto: driverPhoto,
+
+      vehicle: vehicle,
+
+      vehicleColor: vehicleColor,
+
+      plate: plate,
+
+      rating: rating,
+
+      phone: phone
+
+    };
+
+
+    /* SAVE TRIP */
+
+    await update(
+      ref(database, "trips/" + tripId),
+      tripData
+    );
+
+
+    /* REMEMBER CURRENT TRIP */
+
+    await update(
+      ref(database, "adminState"),
+      {
+        lastTripId: tripId
+      }
+    );
+
+
+    showLinks(tripId);
+
+
+    document.getElementById("mapStatus").innerText =
+      "✅ Trip saved successfully. It will be restored automatically when you reopen Admin.";
+
+
+    alert("Trip saved successfully!");
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Error saving trip: " +
+      error.message
+    );
+
+  }
+
+};
+
+
+/* =========================
+   COMPLETE RIDE
+========================= */
+
+window.completeRide = async function() {
+
+  const tripId =
+    document.getElementById("tripId").value.trim();
+
+
+  if (!tripId) {
+
+    alert("Please enter a Trip ID.");
+
+    return;
+
+  }
+
+
+  const confirmed = confirm(
+    "Are you sure you want to complete this ride?"
+  );
+
+
+  if (!confirmed) return;
+
+
+  try {
+
+    await update(
+      ref(database, "trips/" + tripId),
+      {
+
+        status: "Trip completed",
+
+        completedAt: Date.now(),
+
+        sharingActive: false
+
+      }
+    );
+
+
+    /* REMOVE IT AS CURRENT ACTIVE TRIP */
+
+    await update(
+      ref(database, "adminState"),
+      {
+        lastTripId: null
+      }
+    );
+
+
+    document.getElementById("status").value =
+      "Trip completed";
+
+
+    document.getElementById("mapStatus").innerText =
+      "🏁 Ride completed.";
+
+
+    alert("Ride completed successfully.");
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    alert(
+      "Error completing ride: " +
+      error.message
+    );
+
+  }
+
+};
+
+
+/* =========================
+   LOGIN
+========================= */
+
+window.loginAdmin = async function() {
+
+  const email =
+    document.getElementById("loginEmail").value.trim();
+
+
+  const password =
+    document.getElementById("loginPassword").value;
+
+
+  document.getElementById("loginError").innerText =
+    "";
+
+
+  try {
+
+    await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+
+  }
+
+  catch (error) {
+
+    console.error(error);
+
+    document.getElementById("loginError").innerText =
+      "Login failed: " + error.message;
+
+  }
+
+};
+
+
+/* =========================
+   LOGOUT
+========================= */
+
+window.logoutAdmin = async function() {
+
+  await signOut(auth);
+
+};
+
+
+/* =========================
+   AUTH STATE
+========================= */
+
+onAuthStateChanged(
+  auth,
+  async function(user) {
+
+    if (user) {
+
+      document.getElementById("loginScreen")
+        .style.display = "none";
+
+
+      document.getElementById("adminPanel")
+        .style.display = "block";
+
+
+      document.getElementById("logoutButton")
+        .style.display = "block";
+
+
+      /* RESTORE LAST ACTIVE TRIP */
+
+      await restoreCurrentTrip();
+
+
+      setTimeout(function() {
+
+        map.invalidateSize();
+
+      }, 300);
+
+    }
+
+    else {
+
+      document.getElementById("loginScreen")
+        .style.display = "block";
+
+
+      document.getElementById("adminPanel")
+        .style.display = "none";
+
+
+      document.getElementById("logoutButton")
+        .style.display = "none";
+
+    }
+
+  }
+);
+
+</script>
+
+</body>
+</html>
 ```
