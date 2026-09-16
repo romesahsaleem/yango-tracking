@@ -1,713 +1,501 @@
 ```html
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>Yango Tracking - Admin</title>
-
-
-  <!-- Leaflet Map -->
 
   <link
     rel="stylesheet"
     href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
   >
 
-
   <style>
-
     * {
       box-sizing: border-box;
     }
 
-
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      background: #f4f4f4;
       color: #111;
     }
 
-
-    header {
-      background: #000;
-      color: white;
-      padding: 22px;
-      text-align: center;
-    }
-
-
-    header h1 {
-      margin: 0;
-      font-size: 28px;
-      letter-spacing: 1px;
-    }
-
-
-    header p {
-      margin: 6px 0 0;
-      color: #ccc;
-    }
-
-
     .container {
-      max-width: 900px;
+      width: 95%;
+      max-width: 1100px;
       margin: 25px auto;
-      padding: 0 15px 40px;
     }
 
+    h1 {
+      margin-bottom: 5px;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 20px;
+    }
 
     .card {
       background: white;
-      border-radius: 16px;
-      padding: 22px;
+      border-radius: 12px;
+      padding: 20px;
       margin-bottom: 20px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
-
 
     h2 {
       margin-top: 0;
-      font-size: 20px;
     }
-
 
     label {
       display: block;
       font-weight: bold;
-      margin: 14px 0 6px;
+      margin-top: 12px;
+      margin-bottom: 5px;
     }
-
 
     input,
     select {
       width: 100%;
-      padding: 13px;
-      border: 1px solid #ddd;
-      border-radius: 10px;
+      padding: 11px;
+      border: 1px solid #ccc;
+      border-radius: 7px;
       font-size: 15px;
-      outline: none;
     }
-
-
-    input:focus,
-    select:focus {
-      border-color: #e00000;
-    }
-
 
     button {
       border: none;
-      border-radius: 10px;
-      padding: 13px 18px;
-      font-size: 15px;
-      font-weight: bold;
+      padding: 11px 16px;
+      border-radius: 7px;
       cursor: pointer;
-    }
-
-
-    /* LOGIN */
-
-    .login-container {
-      max-width: 430px;
-      margin: 60px auto;
-      padding: 0 15px;
-    }
-
-
-    .login-card {
-      background: white;
-      border-radius: 16px;
-      padding: 25px;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.08);
-    }
-
-
-    .login-card h2 {
-      margin-top: 0;
-    }
-
-
-    .login-card p {
-      color: #666;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-
-    .login-btn {
-      width: 100%;
-      margin-top: 18px;
-      background: #e00000;
-      color: white;
-      font-size: 16px;
-    }
-
-
-    .login-error {
-      display: none;
+      font-weight: bold;
       margin-top: 12px;
-      padding: 12px;
-      border-radius: 10px;
-      background: #fff1f1;
-      color: #b00000;
-      font-size: 14px;
+      margin-right: 6px;
     }
 
-
-    .logout-btn {
-      background: white;
-      color: #111;
-      margin-top: 15px;
-      padding: 9px 15px;
-      font-size: 13px;
-    }
-
-
-    /* MAP */
-
-    .map-buttons {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 15px 0;
-    }
-
-
-    .pickup-btn {
+    .black-btn {
       background: #111;
       color: white;
     }
 
-
-    .dropoff-btn {
-      background: #e00000;
+    .green-btn {
+      background: #16803c;
       color: white;
     }
 
-
-    .clear-btn {
-      background: #eee;
-      color: #111;
+    .red-btn {
+      background: #c62828;
+      color: white;
     }
 
-
-    #adminMap {
-      width: 100%;
-      height: 400px;
-      border-radius: 14px;
-      overflow: hidden;
-      border: 1px solid #ddd;
+    .gray-btn {
+      background: #777;
+      color: white;
     }
 
+    .blue-btn {
+      background: #1769aa;
+      color: white;
+    }
 
-    .status-message {
+    button:hover {
+      opacity: 0.9;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .links {
       background: #f7f7f7;
-      border-radius: 10px;
-      padding: 12px;
-      margin-bottom: 12px;
-      font-size: 14px;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
     }
-
-
-    .coordinates {
-      margin-top: 12px;
-      background: #fafafa;
-      border-radius: 10px;
-      padding: 12px;
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-
-    .section-note {
-      color: #666;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-
-    /* BUTTONS */
-
-    .save-btn {
-      width: 100%;
-      margin-top: 5px;
-      background: #e00000;
-      color: white;
-      font-size: 17px;
-      padding: 16px;
-    }
-
-
-    .complete-btn {
-      width: 100%;
-      margin-top: 12px;
-      background: #111;
-      color: white;
-      font-size: 17px;
-      padding: 16px;
-    }
-
-
-    /* SUCCESS */
-
-    .success {
-      display: none;
-      background: #f1fff3;
-      border: 1px solid #b8e6bd;
-      padding: 18px;
-      border-radius: 12px;
-      margin-top: 20px;
-    }
-
 
     .link-box {
+      margin-top: 10px;
+    }
+
+    .link-box input {
       background: white;
-      border: 1px solid #ddd;
+    }
+
+    #map {
+      height: 420px;
       border-radius: 10px;
+      margin-top: 15px;
+    }
+
+    .status-box {
+      padding: 12px;
+      border-radius: 7px;
+      margin-top: 12px;
+      background: #eee;
+      font-weight: bold;
+    }
+
+    .success {
+      background: #dff5e5;
+      color: #176b32;
+    }
+
+    .warning {
+      background: #fff3cd;
+      color: #856404;
+    }
+
+    .danger {
+      background: #f8d7da;
+      color: #842029;
+    }
+
+    .trip-history-item {
+      border: 1px solid #ddd;
+      border-radius: 8px;
       padding: 12px;
       margin-top: 10px;
-      word-break: break-all;
+      background: #fafafa;
+    }
+
+    .trip-history-item strong {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .small {
       font-size: 13px;
+      color: #666;
     }
 
-
-    .copy-btn {
-      background: #111;
+    .current-badge {
+      display: inline-block;
+      background: #16803c;
       color: white;
-      margin-top: 8px;
-      width: 100%;
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 12px;
+      margin-left: 5px;
     }
 
-
-    /* MAP PINS */
-
-    .pin {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    .completed-badge {
+      display: inline-block;
+      background: #777;
       color: white;
-      font-size: 16px;
-      font-weight: bold;
-      border: 3px solid white;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+      padding: 4px 8px;
+      border-radius: 20px;
+      font-size: 12px;
     }
 
-
-    .pickup-pin {
-      background: #111;
-    }
-
-
-    .dropoff-pin {
-      background: #e00000;
-    }
-
-
-    @media (max-width: 600px) {
-
-      #adminMap {
-        height: 330px;
+    @media (max-width: 700px) {
+      .row {
+        grid-template-columns: 1fr;
       }
 
-
-      header h1 {
-        font-size: 23px;
+      #map {
+        height: 350px;
       }
-
     }
-
   </style>
-
 </head>
-
 
 <body>
 
+<div class="container">
 
-<!-- HEADER -->
+  <h1>Yango Tracking — Admin</h1>
+  <div class="subtitle">
+    Manage your current trip, driver location and tracking links.
+  </div>
 
-<header>
-
-  <h1>Yango Tracking</h1>
-
-  <p>Admin Panel</p>
-
-  <button
-    id="logoutButton"
-    class="logout-btn"
-    onclick="logoutAdmin()"
-    style="display:none;"
-  >
-    Logout
-  </button>
-
-</header>
-
-
-
-<!-- LOGIN -->
-
-<div
-  id="loginScreen"
-  class="login-container"
->
-
-  <div class="login-card">
-
+  <!-- AUTH -->
+  <div id="loginCard" class="card">
     <h2>Admin Login</h2>
 
-    <p>
-      Please sign in to access the admin panel.
-    </p>
+    <label>Email</label>
+    <input id="email" type="email" placeholder="Admin email">
 
+    <label>Password</label>
+    <input id="password" type="password" placeholder="Password">
 
-    <input
-      type="email"
-      id="loginEmail"
-      placeholder="Email"
-      autocomplete="email"
-    >
-
-
-    <input
-      type="password"
-      id="loginPassword"
-      placeholder="Password"
-      autocomplete="current-password"
-    >
-
-
-    <button
-      class="login-btn"
-      onclick="loginAdmin()"
-    >
+    <button class="black-btn" id="loginBtn">
       Login
     </button>
 
-
-    <div
-      id="loginError"
-      class="login-error"
-    ></div>
-
-  </div>
-
-</div>
-
-
-
-<!-- ADMIN PANEL -->
-
-<div
-  class="container"
-  id="adminPanel"
-  style="display:none;"
->
-
-
-  <!-- TRIP DETAILS -->
-
-  <div class="card">
-
-    <h2>Trip Details</h2>
-
-
-    <label>Trip ID</label>
-
-    <input
-      id="tripId"
-      placeholder="Example: 76EEH8"
-    >
-
-
-    <label>Trip Status</label>
-
-    <select id="status">
-
-      <option>
-        Driver is on the way
-      </option>
-
-      <option>
-        Driver arrived
-      </option>
-
-      <option>
-        Trip started
-      </option>
-
-      <option>
-        Trip completed
-      </option>
-
-    </select>
-
-
-    <label>Pickup Location Name</label>
-
-    <input
-      id="pickup"
-      placeholder="Example: Clifton Block 5"
-    >
-
-
-    <label>Drop-off Location Name</label>
-
-    <input
-      id="dropoff"
-      placeholder="Example: Dolmen Mall Clifton"
-    >
-
+    <div id="loginMessage" class="status-box"></div>
   </div>
 
 
+  <!-- ADMIN -->
+  <div id="adminPanel" style="display:none;">
 
-  <!-- MAP -->
+    <!-- CURRENT TRIP -->
+    <div class="card">
 
-  <div class="card">
+      <h2>
+        Current Trip
+        <span id="currentTripBadge"></span>
+      </h2>
 
-    <h2>Route Locations</h2>
+      <div id="currentTripMessage" class="status-box">
+        No active trip loaded.
+      </div>
 
+      <label>Trip ID</label>
 
-    <p class="section-note">
+      <div class="row">
+        <div>
+          <input
+            id="tripId"
+            placeholder="Example: 76EEH8"
+          >
+        </div>
 
-      Enter the pickup and drop-off names above,
-      then select each point on the map.
-
-    </p>
-
-
-    <div class="map-buttons">
+        <div>
+          <button
+            class="blue-btn"
+            id="loadTripBtn"
+            style="margin-top:0;"
+          >
+            Load Existing Trip
+          </button>
+        </div>
+      </div>
 
       <button
-        type="button"
-        class="pickup-btn"
-        onclick="selectPickup()"
+        class="black-btn"
+        id="newTripBtn"
       >
-        📍 Set Pickup
-      </button>
-
-
-      <button
-        type="button"
-        class="dropoff-btn"
-        onclick="selectDropoff()"
-      >
-        🔴 Set Drop-off
-      </button>
-
-
-      <button
-        type="button"
-        class="clear-btn"
-        onclick="clearLocations()"
-      >
-        Clear Map
+        + New Trip
       </button>
 
     </div>
 
 
-    <div
-      id="mapStatus"
-      class="status-message"
-    >
-      Select Pickup or Drop-off,
-      then click the map.
+    <!-- TRIP DETAILS -->
+    <div class="card">
+
+      <h2>Trip Details</h2>
+
+      <div class="row">
+
+        <div>
+          <label>Status</label>
+
+          <select id="status">
+            <option value="Trip started">Trip started</option>
+            <option value="Driver arriving">Driver arriving</option>
+            <option value="Driver arrived">Driver arrived</option>
+            <option value="Trip in progress">Trip in progress</option>
+            <option value="Trip completed">Trip completed</option>
+          </select>
+        </div>
+
+        <div>
+          <label>Driver Name</label>
+          <input id="driverName" placeholder="Driver name">
+        </div>
+
+      </div>
+
+
+      <div class="row">
+
+        <div>
+          <label>Pickup</label>
+          <input id="pickup" placeholder="Pickup location">
+        </div>
+
+        <div>
+          <label>Drop-off</label>
+          <input id="dropoff" placeholder="Drop-off location">
+        </div>
+
+      </div>
+
+
+      <div class="row">
+
+        <div>
+          <label>Driver Photo URL</label>
+          <input id="driverPhoto" placeholder="Photo URL">
+        </div>
+
+        <div>
+          <label>Phone</label>
+          <input id="phone" placeholder="Driver phone">
+        </div>
+
+      </div>
+
+
+      <div class="row">
+
+        <div>
+          <label>Vehicle</label>
+          <input id="vehicle" placeholder="Vehicle">
+        </div>
+
+        <div>
+          <label>Vehicle Color</label>
+          <input id="vehicleColor" placeholder="Vehicle color">
+        </div>
+
+      </div>
+
+
+      <div class="row">
+
+        <div>
+          <label>Plate</label>
+          <input id="plate" placeholder="Vehicle plate">
+        </div>
+
+        <div>
+          <label>Rating</label>
+          <input id="rating" placeholder="Example: 4.8">
+        </div>
+
+      </div>
+
     </div>
 
 
-    <div id="adminMap"></div>
+    <!-- COORDINATES -->
+    <div class="card">
+
+      <h2>Pickup & Drop-off Coordinates</h2>
+
+      <p class="small">
+        These coordinates are saved permanently with the trip and will be
+        automatically restored when you reopen Admin.
+      </p>
+
+      <div class="row">
+
+        <div>
+          <label>Pickup Latitude</label>
+          <input id="pickupLat" type="number" step="any">
+        </div>
+
+        <div>
+          <label>Pickup Longitude</label>
+          <input id="pickupLng" type="number" step="any">
+        </div>
+
+      </div>
 
 
-    <div class="coordinates">
+      <div class="row">
 
-      <strong>Pickup coordinates:</strong>
+        <div>
+          <label>Drop-off Latitude</label>
+          <input id="dropoffLat" type="number" step="any">
+        </div>
 
-      <span id="pickupCoords">
-        Not selected
-      </span>
+        <div>
+          <label>Drop-off Longitude</label>
+          <input id="dropoffLng" type="number" step="any">
+        </div>
 
+      </div>
 
-      <br>
-
-
-      <strong>Drop-off coordinates:</strong>
-
-      <span id="dropoffCoords">
-        Not selected
-      </span>
+      <button class="green-btn" id="saveTripBtn">
+        Save / Update Trip
+      </button>
 
     </div>
 
-  </div>
 
+    <!-- MAP -->
+    <div class="card">
 
+      <h2>Live Trip Map</h2>
 
-  <!-- DRIVER DETAILS -->
+      <div id="map"></div>
 
-  <div class="card">
+      <div id="mapStatus" class="status-box">
+        Waiting for trip...
+      </div>
 
-    <h2>Driver Details</h2>
-
-
-    <label>Driver Name</label>
-
-    <input
-      id="driverName"
-      placeholder="Example: Ali Khan"
-    >
-
-
-    <label>Driver Photo URL</label>
-
-    <input
-      id="driverPhoto"
-      placeholder="Paste image URL"
-    >
-
-
-    <label>Vehicle Model</label>
-
-    <input
-      id="vehicle"
-      placeholder="Example: Toyota Corolla"
-    >
-
-
-    <label>Vehicle Color</label>
-
-    <input
-      id="vehicleColor"
-      placeholder="Example: White"
-    >
-
-
-    <label>Plate Number</label>
-
-    <input
-      id="plate"
-      placeholder="Example: ABC-123"
-    >
-
-
-    <label>Rating</label>
-
-    <input
-      id="rating"
-      placeholder="Example: 4.9"
-    >
-
-
-    <label>Phone</label>
-
-    <input
-      id="phone"
-      placeholder="Example: 03001234567"
-    >
-
-  </div>
-
-
-
-  <!-- CONTROLS -->
-
-  <div class="card">
-
-    <button
-      type="button"
-      class="save-btn"
-      onclick="saveTrip()"
-    >
-      Save Trip
-    </button>
-
-
-    <button
-      type="button"
-      class="complete-btn"
-      onclick="completeRide()"
-    >
-      🏁 Complete Ride
-    </button>
-
+    </div>
 
 
     <!-- LINKS -->
+    <div class="card">
 
-    <div
-      id="successBox"
-      class="success"
-    >
+      <h2>Tracking Links</h2>
 
-      <strong>
-        ✅ Trip saved successfully!
-      </strong>
+      <div class="links">
 
+        <div class="link-box">
+          <strong>🚗 Driver Link</strong>
+          <input id="driverLink" readonly>
+          <button class="black-btn" id="copyDriverBtn">
+            Copy Driver Link
+          </button>
+        </div>
 
-      <div style="margin-top:18px;">
-
-        🚗
-
-        <strong>
-          Driver GPS Link
-        </strong>
-
-      </div>
-
-
-      <div
-        id="driverLink"
-        class="link-box"
-      ></div>
-
-
-      <button
-        type="button"
-        class="copy-btn"
-        onclick="copyDriverLink()"
-      >
-        Copy Driver Link
-      </button>
-
-
-
-      <div style="margin-top:22px;">
-
-        📍
-
-        <strong>
-          Teacher Tracking Link
-        </strong>
+        <div class="link-box">
+          <strong>👩‍🏫 Teacher Tracking Link</strong>
+          <input id="teacherLink" readonly>
+          <button class="black-btn" id="copyTeacherBtn">
+            Copy Teacher Link
+          </button>
+        </div>
 
       </div>
 
+    </div>
 
-      <div
-        id="trackingLink"
-        class="link-box"
-      ></div>
 
+    <!-- CONTROLS -->
+    <div class="card">
+
+      <h2>Trip Controls</h2>
+
+      <div id="controlStatus" class="status-box">
+        No active trip.
+      </div>
 
       <button
-        type="button"
-        class="copy-btn"
-        onclick="copyTrackingLink()"
+        class="red-btn"
+        id="stopSharingBtn"
       >
-        Copy Tracking Link
+        🛑 Stop Sharing Location
       </button>
+
+      <button
+        class="green-btn"
+        id="completeRideBtn"
+      >
+        ✅ Complete Ride
+      </button>
+
+      <button
+        class="gray-btn"
+        id="logoutBtn"
+      >
+        Logout
+      </button>
+
+    </div>
+
+
+    <!-- HISTORY -->
+    <div class="card">
+
+      <h2>Trip History</h2>
+
+      <div id="history">
+        Loading trip history...
+      </div>
 
     </div>
 
@@ -716,28 +504,11 @@
 </div>
 
 
-
-<!-- LEAFLET -->
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-
-
-
-<!-- FIREBASE + JAVASCRIPT -->
-
 <script type="module">
-
-
-  // ================================
-  // FIREBASE IMPORTS
-  // ================================
 
   import {
     initializeApp
-  }
-  from
-    "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
   import {
     getDatabase,
@@ -745,200 +516,142 @@
     update,
     get,
     onValue
-  }
-  from
-    "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
-
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
   import {
     getAuth,
     onAuthStateChanged,
     signInWithEmailAndPassword,
     signOut
-  }
-  from
-    "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+  } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
 
+  /*
+   ==========================================================
+   FIREBASE CONFIG
+   ==========================================================
 
-  // ================================
-  // FIREBASE CONFIG
-  // ================================
+   IMPORTANT:
+   Keep the EXACT firebaseConfig from your CURRENT working
+   admin.html here.
+
+   Replace ONLY the placeholder values below if necessary.
+  */
 
   const firebaseConfig = {
-
-    apiKey:
-      "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
-
-    authDomain:
-      "yango-tracking.firebaseapp.com",
-
-    projectId:
-      "yango-tracking",
-
-    storageBucket:
-      "yango-tracking.firebasestorage.app",
-
-    messagingSenderId:
-      "1019473211995",
-
-    appId:
-      "1:1019473211995:web:56a81d2fc43cda8dd5857e",
-
-    databaseURL:
-      "https://yango-tracking-default-rtdb.asia-southeast1.firebasedatabase.app"
-
+    apiKey: "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
+    authDomain: "yango-tracking.firebaseapp.com",
+    databaseURL: "https://yango-tracking-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "yango-tracking",
+    storageBucket: "yango-tracking.firebasestorage.app",
+    messagingSenderId: "YOUR_EXISTING_MESSAGING_SENDER_ID",
+    appId: "YOUR_EXISTING_FIREBASE_APP_ID"
   };
 
 
+  const app = initializeApp(firebaseConfig);
 
-  // ================================
-  // INITIALIZE FIREBASE
-  // ================================
-
-  const app =
-    initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+  const auth = getAuth(app);
 
 
-  const database =
-    getDatabase(app);
+  /*
+   ==========================================================
+   GLOBAL VARIABLES
+   ==========================================================
+  */
+
+  let currentLoadedTripId = null;
+
+  let tripListener = null;
+
+  let adminStateListener = null;
+
+  let historyListener = null;
+
+  let pickupMarker = null;
+
+  let dropoffMarker = null;
+
+  let driverMarker = null;
 
 
-  const auth =
-    getAuth(app);
+  /*
+   ==========================================================
+   MAP
+   ==========================================================
+  */
 
-
-
-  // ================================
-  // MAP
-  // ================================
-
-  const map =
-    L.map("adminMap").setView(
-      [24.8607, 67.0011],
-      12
-    );
-
+  const map = L.map("map").setView(
+    [24.8607, 67.0011],
+    12
+  );
 
   L.tileLayer(
     "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
     {
-
-      maxZoom: 19,
-
-      attribution:
-        "&copy; OpenStreetMap contributors"
-
+      attribution: "&copy; OpenStreetMap contributors"
     }
   ).addTo(map);
 
 
+  /*
+   ==========================================================
+   ELEMENTS
+   ==========================================================
+  */
 
-  // ================================
-  // LOCATION VARIABLES
-  // ================================
+  const loginCard =
+    document.getElementById("loginCard");
 
-  let selectionMode = null;
+  const adminPanel =
+    document.getElementById("adminPanel");
 
+  const loginMessage =
+    document.getElementById("loginMessage");
 
-  let pickupLat = null;
-  let pickupLng = null;
+  const currentTripMessage =
+    document.getElementById("currentTripMessage");
 
+  const currentTripBadge =
+    document.getElementById("currentTripBadge");
 
-  let dropoffLat = null;
-  let dropoffLng = null;
+  const mapStatus =
+    document.getElementById("mapStatus");
 
+  const controlStatus =
+    document.getElementById("controlStatus");
 
-  let pickupMarker = null;
-  let dropoffMarker = null;
-
-
-  let currentLoadedTripId = null;
-
-
-  let tripListener = null;
-
-
-
-  // ================================
-  // MARKER ICONS
-  // ================================
-
-  const pickupIcon =
-    L.divIcon({
-
-      className: "",
-
-      html:
-        '<div class="pin pickup-pin">P</div>',
-
-      iconSize: [32, 32],
-
-      iconAnchor: [16, 16]
-
-    });
+  const historyContainer =
+    document.getElementById("history");
 
 
-  const dropoffIcon =
-    L.divIcon({
+  /*
+   ==========================================================
+   LOGIN
+   ==========================================================
+  */
 
-      className: "",
-
-      html:
-        '<div class="pin dropoff-pin">D</div>',
-
-      iconSize: [32, 32],
-
-      iconAnchor: [16, 16]
-
-    });
-
-
-
-  // ================================
-  // ADMIN LOGIN
-  // ================================
-
-  window.loginAdmin =
-    async function() {
-
+  document
+    .getElementById("loginBtn")
+    .addEventListener("click", async () => {
 
       const email =
-        document
-          .getElementById("loginEmail")
-          .value
-          .trim();
-
+        document.getElementById("email").value.trim();
 
       const password =
-        document
-          .getElementById("loginPassword")
-          .value;
-
-
-      const errorBox =
-        document
-          .getElementById("loginError");
-
-
-      errorBox.style.display =
-        "none";
-
+        document.getElementById("password").value;
 
       if (!email || !password) {
 
-        errorBox.innerText =
-          "Please enter your email and password.";
+        loginMessage.className =
+          "status-box danger";
 
-
-        errorBox.style.display =
-          "block";
-
+        loginMessage.textContent =
+          "Please enter email and password.";
 
         return;
-
       }
-
 
       try {
 
@@ -948,252 +661,243 @@
           password
         );
 
+        loginMessage.textContent = "";
+
+      } catch (error) {
+
+        loginMessage.className =
+          "status-box danger";
+
+        loginMessage.textContent =
+          error.message;
       }
 
-      catch (error) {
-
-        console.error(error);
+    });
 
 
-        errorBox.innerText =
-          "Login failed. Please check your email and password.";
+  /*
+   ==========================================================
+   AUTH STATE
+   ==========================================================
+  */
 
+  onAuthStateChanged(
+    auth,
+    async (user) => {
 
-        errorBox.style.display =
-          "block";
+      if (!user) {
 
+        loginCard.style.display = "block";
+        adminPanel.style.display = "none";
+
+        return;
       }
 
-    };
+
+      loginCard.style.display = "none";
+      adminPanel.style.display = "block";
 
 
+      /*
+       ------------------------------------------------------
+       FIRST: CHECK URL
+       ------------------------------------------------------
+      */
 
-  // ================================
-  // LOGOUT
-  // ================================
-
-  window.logoutAdmin =
-    async function() {
-
-      try {
-
-        await signOut(auth);
-
-      }
-
-      catch (error) {
-
-        console.error(error);
-
-        alert(
-          "Could not log out."
+      const urlParams =
+        new URLSearchParams(
+          window.location.search
         );
 
+      const tripFromUrl =
+        urlParams.get("trip");
+
+
+      if (tripFromUrl) {
+
+        document
+          .getElementById("tripId")
+          .value = tripFromUrl;
+
+        await loadTrip(tripFromUrl);
+
+        setCurrentAdminTrip(tripFromUrl);
+
+      } else {
+
+        /*
+         ----------------------------------------------------
+         NO URL TRIP
+
+         Ask Firebase for the current Admin trip.
+         This is what makes the trip survive closing/reopening
+         the Admin page.
+         ----------------------------------------------------
+        */
+
+        try {
+
+          const adminStateSnapshot =
+            await get(
+              ref(database, "adminState")
+            );
+
+          const state =
+            adminStateSnapshot.val();
+
+          if (
+            state &&
+            state.lastTripId
+          ) {
+
+            const savedTripId =
+              state.lastTripId;
+
+            document
+              .getElementById("tripId")
+              .value = savedTripId;
+
+            await loadTrip(savedTripId);
+
+            setCurrentAdminTrip(
+              savedTripId
+            );
+
+          } else {
+
+            /*
+             fallback to localStorage
+            */
+
+            const localTripId =
+              localStorage.getItem(
+                "lastTripId"
+              );
+
+            if (localTripId) {
+
+              document
+                .getElementById("tripId")
+                .value = localTripId;
+
+              await loadTrip(localTripId);
+
+              setCurrentAdminTrip(
+                localTripId
+              );
+
+            } else {
+
+              showNoCurrentTrip();
+
+            }
+
+          }
+
+        } catch (error) {
+
+          console.error(
+            "Could not restore current trip:",
+            error
+          );
+
+          /*
+           fallback
+          */
+
+          const localTripId =
+            localStorage.getItem(
+              "lastTripId"
+            );
+
+          if (localTripId) {
+
+            document
+              .getElementById("tripId")
+              .value = localTripId;
+
+            await loadTrip(localTripId);
+
+          } else {
+
+            showNoCurrentTrip();
+
+          }
+        }
+
       }
 
-    };
 
-
-
-  // ================================
-  // MAP MARKER HELPERS
-  // ================================
-
-  function restorePickupMarker(
-    lat,
-    lng
-  ) {
-
-    pickupLat = Number(lat);
-    pickupLng = Number(lng);
-
-
-    if (pickupMarker) {
-
-      pickupMarker.setLatLng(
-        [pickupLat, pickupLng]
-      );
+      startHistoryListener();
 
     }
-
-    else {
-
-      pickupMarker =
-        L.marker(
-          [pickupLat, pickupLng],
-          {
-            icon: pickupIcon
-          }
-        ).addTo(map);
+  );
 
 
-      pickupMarker.bindPopup(
-        "Pickup Location"
-      );
+  /*
+   ==========================================================
+   SHOW NO CURRENT TRIP
+   ==========================================================
+  */
 
-    }
+  function showNoCurrentTrip() {
 
+    currentLoadedTripId = null;
 
-    document
-      .getElementById("pickupCoords")
-      .innerText =
-      pickupLat.toFixed(6) +
-      ", " +
-      pickupLng.toFixed(6);
+    currentTripBadge.innerHTML = "";
+
+    currentTripMessage.className =
+      "status-box warning";
+
+    currentTripMessage.textContent =
+      "No current trip. Click + New Trip to create one.";
+
+    controlStatus.className =
+      "status-box warning";
+
+    controlStatus.textContent =
+      "No active trip.";
+
+    mapStatus.className =
+      "status-box warning";
+
+    mapStatus.textContent =
+      "Create or load a trip.";
 
   }
 
 
+  /*
+   ==========================================================
+   LOAD TRIP
+   ==========================================================
+  */
 
-  function restoreDropoffMarker(
-    lat,
-    lng
-  ) {
+  async function loadTrip(tripId) {
 
-    dropoffLat = Number(lat);
-    dropoffLng = Number(lng);
-
-
-    if (dropoffMarker) {
-
-      dropoffMarker.setLatLng(
-        [dropoffLat, dropoffLng]
-      );
-
-    }
-
-    else {
-
-      dropoffMarker =
-        L.marker(
-          [dropoffLat, dropoffLng],
-          {
-            icon: dropoffIcon
-          }
-        ).addTo(map);
-
-
-      dropoffMarker.bindPopup(
-        "Drop-off Location"
-      );
-
-    }
-
-
-    document
-      .getElementById("dropoffCoords")
-      .innerText =
-      dropoffLat.toFixed(6) +
-      ", " +
-      dropoffLng.toFixed(6);
-
-  }
-
-
-
-  function fitMapToLocations() {
-
-    const points = [];
-
-
-    if (
-      pickupLat !== null &&
-      pickupLng !== null
-    ) {
-
-      points.push(
-        [pickupLat, pickupLng]
-      );
-
-    }
-
-
-    if (
-      dropoffLat !== null &&
-      dropoffLng !== null
-    ) {
-
-      points.push(
-        [dropoffLat, dropoffLng]
-      );
-
-    }
-
-
-    if (points.length === 1) {
-
-      map.setView(
-        points[0],
-        15
-      );
-
-    }
-
-
-    else if (points.length === 2) {
-
-      map.fitBounds(
-        points,
-        {
-          padding: [40, 40]
-        }
-      );
-
-    }
-
-  }
-
-
-
-  // ================================
-  // LOAD TRIP INTO ADMIN
-  // ================================
-
-  async function loadTrip(
-    tripId,
-    showMessage = true
-  ) {
-
-    if (!tripId) {
-      return;
-    }
-
-
-    tripId =
-      tripId.trim();
-
-
-    if (!tripId) {
-      return;
-    }
+    if (!tripId) return;
 
 
     try {
 
-      const tripRef =
-        ref(
-          database,
-          "trips/" + tripId
-        );
-
-
       const snapshot =
-        await get(tripRef);
+        await get(
+          ref(
+            database,
+            "trips/" + tripId
+          )
+        );
 
 
       if (!snapshot.exists()) {
 
-        if (showMessage) {
+        currentTripMessage.className =
+          "status-box danger";
 
-          console.log(
-            "No saved trip found for:",
-            tripId
-          );
-
-        }
+        currentTripMessage.textContent =
+          "Trip " + tripId + " does not exist.";
 
         return;
-
       }
 
 
@@ -1201,11 +905,180 @@
         snapshot.val();
 
 
+      /*
+       ------------------------------------------------------
+       BASIC DETAILS
+       ------------------------------------------------------
+      */
+
+      document.getElementById("tripId").value =
+        tripId;
+
+      document.getElementById("status").value =
+        trip.status || "Trip started";
+
+      document.getElementById("pickup").value =
+        trip.pickup || "";
+
+      document.getElementById("dropoff").value =
+        trip.dropoff || "";
+
+      document.getElementById("driverName").value =
+        trip.driverName || "";
+
+      document.getElementById("driverPhoto").value =
+        trip.driverPhoto || "";
+
+      document.getElementById("phone").value =
+        trip.phone || "";
+
+      document.getElementById("vehicle").value =
+        trip.vehicle || "";
+
+      document.getElementById("vehicleColor").value =
+        trip.vehicleColor || "";
+
+      document.getElementById("plate").value =
+        trip.plate || "";
+
+      document.getElementById("rating").value =
+        trip.rating || "";
+
+
+      /*
+       ------------------------------------------------------
+       RESTORE COORDINATES
+
+       Supports BOTH the flat coordinates and the nested
+       pickupLocation/dropoffLocation structure.
+       ------------------------------------------------------
+      */
+
+      const pickupLat =
+        trip.pickupLat ??
+        trip.pickupLatitude ??
+        trip.pickupLocation?.lat;
+
+      const pickupLng =
+        trip.pickupLng ??
+        trip.pickupLongitude ??
+        trip.pickupLocation?.lng;
+
+      const dropoffLat =
+        trip.dropoffLat ??
+        trip.dropoffLatitude ??
+        trip.dropoffLocation?.lat;
+
+      const dropoffLng =
+        trip.dropoffLng ??
+        trip.dropoffLongitude ??
+        trip.dropoffLocation?.lng;
+
+
+      document.getElementById("pickupLat").value =
+        pickupLat ?? "";
+
+      document.getElementById("pickupLng").value =
+        pickupLng ?? "";
+
+      document.getElementById("dropoffLat").value =
+        dropoffLat ?? "";
+
+      document.getElementById("dropoffLng").value =
+        dropoffLng ?? "";
+
+
+      /*
+       ------------------------------------------------------
+       MAP MARKERS
+       ------------------------------------------------------
+      */
+
+      clearMapMarkers();
+
+
+      if (
+        isValidCoordinate(
+          pickupLat,
+          pickupLng
+        )
+      ) {
+
+        pickupMarker =
+          L.marker([
+            Number(pickupLat),
+            Number(pickupLng)
+          ])
+          .addTo(map)
+          .bindPopup("Pickup");
+
+      }
+
+
+      if (
+        isValidCoordinate(
+          dropoffLat,
+          dropoffLng
+        )
+      ) {
+
+        dropoffMarker =
+          L.marker([
+            Number(dropoffLat),
+            Number(dropoffLng)
+          ])
+          .addTo(map)
+          .bindPopup("Drop-off");
+
+      }
+
+
+      /*
+       ------------------------------------------------------
+       CURRENT DRIVER LOCATION
+       ------------------------------------------------------
+      */
+
+      if (
+        trip.location &&
+        isValidCoordinate(
+          trip.location.lat,
+          trip.location.lng
+        )
+      ) {
+
+        driverMarker =
+          L.marker([
+            Number(trip.location.lat),
+            Number(trip.location.lng)
+          ])
+          .addTo(map)
+          .bindPopup("Driver");
+
+      }
+
+
+      fitMap();
+
+
+      /*
+       ------------------------------------------------------
+       LINKS
+       ------------------------------------------------------
+      */
+
+      updateLinks(tripId);
+
+
+      /*
+       ------------------------------------------------------
+       CURRENT TRIP STATE
+       ------------------------------------------------------
+      */
+
       currentLoadedTripId =
         tripId;
 
-
-      // Remember this trip
 
       localStorage.setItem(
         "lastTripId",
@@ -1213,233 +1086,281 @@
       );
 
 
-      // Trip ID
+      if (
+        trip.status === "Trip completed"
+      ) {
 
-      document
-        .getElementById("tripId")
-        .value =
-        tripId;
+        currentTripBadge.innerHTML =
+          '<span class="completed-badge">Completed</span>';
+
+        currentTripMessage.className =
+          "status-box warning";
+
+        currentTripMessage.textContent =
+          "This trip is completed. Start a New Trip to create another ride.";
+
+        controlStatus.className =
+          "status-box warning";
+
+        controlStatus.textContent =
+          "Trip completed.";
+
+      } else {
+
+        currentTripBadge.innerHTML =
+          '<span class="current-badge">Active</span>';
+
+        currentTripMessage.className =
+          "status-box success";
+
+        currentTripMessage.textContent =
+          "Current trip restored successfully: " +
+          tripId;
+
+        controlStatus.className =
+          "status-box success";
+
+        controlStatus.textContent =
+          "You still have control of this active trip.";
+
+      }
 
 
-      // Status
+      /*
+       ------------------------------------------------------
+       MAP STATUS
+       ------------------------------------------------------
+      */
 
-      if (trip.status) {
+      if (
+        trip.location &&
+        isValidCoordinate(
+          trip.location.lat,
+          trip.location.lng
+        )
+      ) {
 
-        const statusSelect =
-          document.getElementById(
-            "status"
-          );
+        mapStatus.className =
+          "status-box success";
+
+        mapStatus.textContent =
+          "Live driver location received.";
+
+      } else {
+
+        mapStatus.className =
+          "status-box warning";
+
+        mapStatus.textContent =
+          "Trip loaded. Waiting for live driver location.";
+
+      }
 
 
-        const optionExists =
-          Array.from(
-            statusSelect.options
-          ).some(
-            option =>
-              option.value === trip.status
-          );
+      /*
+       ------------------------------------------------------
+       START REAL-TIME LISTENER
+       ------------------------------------------------------
+      */
+
+      watchTrip(tripId);
 
 
-        if (optionExists) {
+    } catch (error) {
 
-          statusSelect.value =
-            trip.status;
+      console.error(error);
+
+      currentTripMessage.className =
+        "status-box danger";
+
+      currentTripMessage.textContent =
+        "Could not load trip: " +
+        error.message;
+    }
+
+  }
+
+
+  /*
+   ==========================================================
+   REAL-TIME TRIP WATCHER
+   ==========================================================
+  */
+
+  function watchTrip(tripId) {
+
+    if (tripListener) {
+
+      tripListener();
+
+      tripListener = null;
+    }
+
+
+    tripListener =
+      onValue(
+        ref(
+          database,
+          "trips/" + tripId
+        ),
+        (snapshot) => {
+
+          if (!snapshot.exists()) return;
+
+
+          const trip =
+            snapshot.val();
+
+
+          /*
+           Update status
+          */
+
+          if (trip.status) {
+
+            document
+              .getElementById("status")
+              .value = trip.status;
+
+          }
+
+
+          /*
+           Update live driver marker
+          */
+
+          if (
+            trip.location &&
+            isValidCoordinate(
+              trip.location.lat,
+              trip.location.lng
+            )
+          ) {
+
+            const lat =
+              Number(trip.location.lat);
+
+            const lng =
+              Number(trip.location.lng);
+
+
+            if (!driverMarker) {
+
+              driverMarker =
+                L.marker([
+                  lat,
+                  lng
+                ])
+                .addTo(map)
+                .bindPopup("Driver");
+
+            } else {
+
+              driverMarker.setLatLng([
+                lat,
+                lng
+              ]);
+
+            }
+
+
+            mapStatus.className =
+              "status-box success";
+
+            mapStatus.textContent =
+              "Driver location: " +
+              lat.toFixed(6) +
+              ", " +
+              lng.toFixed(6);
+
+          }
+
+
+          /*
+           Completed state
+          */
+
+          if (
+            trip.status === "Trip completed"
+          ) {
+
+            currentTripBadge.innerHTML =
+              '<span class="completed-badge">Completed</span>';
+
+            currentTripMessage.className =
+              "status-box warning";
+
+            currentTripMessage.textContent =
+              "Trip completed.";
+
+            controlStatus.className =
+              "status-box warning";
+
+            controlStatus.textContent =
+              "Trip completed.";
+
+          } else {
+
+            currentTripBadge.innerHTML =
+              '<span class="current-badge">Active</span>';
+
+            currentTripMessage.className =
+              "status-box success";
+
+            currentTripMessage.textContent =
+              "Current trip: " +
+              tripId;
+
+            controlStatus.className =
+              "status-box success";
+
+            controlStatus.textContent =
+              trip.sharingActive === false
+                ? "Location sharing is stopped."
+                : "Trip is active and under Admin control.";
+
+          }
+
+
+          updateLinks(tripId);
 
         }
+      );
 
-      }
-
-
-      // Text details
-
-      document
-        .getElementById("pickup")
-        .value =
-        trip.pickup || "";
+  }
 
 
-      document
-        .getElementById("dropoff")
-        .value =
-        trip.dropoff || "";
+  /*
+   ==========================================================
+   SET CURRENT ADMIN TRIP
+   ==========================================================
+  */
+
+  async function setCurrentAdminTrip(tripId) {
+
+    if (!tripId) return;
 
 
-      document
-        .getElementById("driverName")
-        .value =
-        trip.driverName || "";
+    try {
 
-
-      document
-        .getElementById("driverPhoto")
-        .value =
-        trip.driverPhoto || "";
-
-
-      document
-        .getElementById("vehicle")
-        .value =
-        trip.vehicle || "";
-
-
-      document
-        .getElementById("vehicleColor")
-        .value =
-        trip.vehicleColor || "";
-
-
-      document
-        .getElementById("plate")
-        .value =
-        trip.plate || "";
-
-
-      document
-        .getElementById("rating")
-        .value =
-        trip.rating || "";
-
-
-      document
-        .getElementById("phone")
-        .value =
-        trip.phone || "";
-
-
-
-      // ================================
-      // RESTORE PICKUP COORDINATES
-      // ================================
-
-      let savedPickupLat =
-        trip.pickupLat;
-
-
-      let savedPickupLng =
-        trip.pickupLng;
-
-
-      // Fallback to nested coordinates
-
-      if (
-        (
-          savedPickupLat === undefined ||
-          savedPickupLng === undefined
-        ) &&
-        trip.pickupLocation
-      ) {
-
-        savedPickupLat =
-          trip.pickupLocation.lat;
-
-        savedPickupLng =
-          trip.pickupLocation.lng;
-
-      }
-
-
-      if (
-        savedPickupLat !== undefined &&
-        savedPickupLng !== undefined &&
-        savedPickupLat !== null &&
-        savedPickupLng !== null
-      ) {
-
-        restorePickupMarker(
-          savedPickupLat,
-          savedPickupLng
-        );
-
-      }
-
-
-
-      // ================================
-      // RESTORE DROP-OFF COORDINATES
-      // ================================
-
-      let savedDropoffLat =
-        trip.dropoffLat;
-
-
-      let savedDropoffLng =
-        trip.dropoffLng;
-
-
-      // Fallback to nested coordinates
-
-      if (
-        (
-          savedDropoffLat === undefined ||
-          savedDropoffLng === undefined
-        ) &&
-        trip.dropoffLocation
-      ) {
-
-        savedDropoffLat =
-          trip.dropoffLocation.lat;
-
-        savedDropoffLng =
-          trip.dropoffLocation.lng;
-
-      }
-
-
-      if (
-        savedDropoffLat !== undefined &&
-        savedDropoffLng !== undefined &&
-        savedDropoffLat !== null &&
-        savedDropoffLng !== null
-      ) {
-
-        restoreDropoffMarker(
-          savedDropoffLat,
-          savedDropoffLng
-        );
-
-      }
-
-
-      fitMapToLocations();
-
-
-
-      // ================================
-      // RESTORE LINKS
-      // ================================
-
-      updateLinks(
-        tripId
+      await update(
+        ref(database, "adminState"),
+        {
+          lastTripId: tripId,
+          updatedAt: Date.now()
+        }
       );
 
 
-      document
-        .getElementById("successBox")
-        .style.display =
-        "block";
+      localStorage.setItem(
+        "lastTripId",
+        tripId
+      );
 
-
-      document
-        .getElementById("mapStatus")
-        .innerText =
-        "✅ Existing trip loaded from Firebase.";
-
-
-      if (showMessage) {
-
-        console.log(
-          "Loaded existing trip:",
-          tripId
-        );
-
-      }
-
-    }
-
-    catch (error) {
+    } catch (error) {
 
       console.error(
-        "Could not load trip:",
+        "Could not save current Admin trip:",
         error
       );
 
@@ -1448,503 +1369,15 @@
   }
 
 
-
-  // ================================
-  // FIREBASE LIVE LISTENER
-  // ================================
-
-  function watchTrip(
-    tripId
-  ) {
-
-    if (tripListener) {
-
-      tripListener();
-
-      tripListener = null;
-
-    }
-
-
-    if (!tripId) {
-      return;
-    }
-
-
-    const tripRef =
-      ref(
-        database,
-        "trips/" + tripId
-      );
-
-
-    tripListener =
-      onValue(
-        tripRef,
-        function(snapshot) {
-
-          if (!snapshot.exists()) {
-            return;
-          }
-
-
-          const trip =
-            snapshot.val();
-
-
-          // Only update if this is
-          // still the active Admin trip.
-
-          if (
-            currentLoadedTripId !== tripId
-          ) {
-            return;
-          }
-
-
-          // Update status if Firebase changes it
-
-          if (trip.status) {
-
-            const statusSelect =
-              document.getElementById(
-                "status"
-              );
-
-
-            const optionExists =
-              Array.from(
-                statusSelect.options
-              ).some(
-                option =>
-                  option.value === trip.status
-              );
-
-
-            if (optionExists) {
-
-              statusSelect.value =
-                trip.status;
-
-            }
-
-          }
-
-
-          // Keep links available
-
-          updateLinks(
-            tripId
-          );
-
-        }
-      );
-
-  }
-
-
-
-  // ================================
-  // UPDATE LINKS
-  // ================================
-
-  function updateLinks(
-    tripId
-  ) {
-
-    if (!tripId) {
-      return;
-    }
-
-
-    const baseUrl =
-      window.location.origin +
-      window.location.pathname.replace(
-        "admin.html",
-        ""
-      );
-
-
-    const driverLink =
-      baseUrl +
-      "driver.html?trip=" +
-      encodeURIComponent(
-        tripId
-      );
-
-
-    const trackingLink =
-      baseUrl +
-      "?trip=" +
-      encodeURIComponent(
-        tripId
-      );
-
-
-    document
-      .getElementById("driverLink")
-      .innerText =
-      driverLink;
-
-
-    document
-      .getElementById("trackingLink")
-      .innerText =
-      trackingLink;
-
-  }
-
-
-
-  // ================================
-  // AUTH STATE
-  // ================================
-
-  onAuthStateChanged(
-    auth,
-    async function(user) {
-
-      const loginScreen =
-        document.getElementById(
-          "loginScreen"
-        );
-
-
-      const adminPanel =
-        document.getElementById(
-          "adminPanel"
-        );
-
-
-      const logoutButton =
-        document.getElementById(
-          "logoutButton"
-        );
-
-
-      if (user) {
-
-        loginScreen.style.display =
-          "none";
-
-
-        adminPanel.style.display =
-          "block";
-
-
-        logoutButton.style.display =
-          "inline-block";
-
-
-        // ================================
-        // RESTORE LAST TRIP
-        // ================================
-
-        const urlParams =
-          new URLSearchParams(
-            window.location.search
-          );
-
-
-        const tripFromUrl =
-          urlParams.get("trip");
-
-
-        const savedTripId =
-          localStorage.getItem(
-            "lastTripId"
-          );
-
-
-        const tripToLoad =
-          tripFromUrl ||
-          savedTripId;
-
-
-        if (tripToLoad) {
-
-          document
-            .getElementById("tripId")
-            .value =
-            tripToLoad;
-
-
-          await loadTrip(
-            tripToLoad
-          );
-
-
-          watchTrip(
-            tripToLoad
-          );
-
-        }
-
-      }
-
-      else {
-
-        loginScreen.style.display =
-          "block";
-
-
-        adminPanel.style.display =
-          "none";
-
-
-        logoutButton.style.display =
-          "none";
-
-      }
-
-    }
-  );
-
-
-
-  // ================================
-  // PICKUP MODE
-  // ================================
-
-  window.selectPickup =
-    function() {
-
-      selectionMode =
-        "pickup";
-
-
-      document
-        .getElementById("mapStatus")
-        .innerText =
-        "📍 Pickup mode active — click the pickup location on the map.";
-
-    };
-
-
-
-  // ================================
-  // DROP-OFF MODE
-  // ================================
-
-  window.selectDropoff =
-    function() {
-
-      selectionMode =
-        "dropoff";
-
-
-      document
-        .getElementById("mapStatus")
-        .innerText =
-        "🔴 Drop-off mode active — click the drop-off location on the map.";
-
-    };
-
-
-
-  // ================================
-  // MAP CLICK
-  // ================================
-
-  map.on(
-    "click",
-    function(event) {
-
-      const lat =
-        event.latlng.lat;
-
-
-      const lng =
-        event.latlng.lng;
-
-
-
-      // PICKUP
-
-      if (
-        selectionMode === "pickup"
-      ) {
-
-        pickupLat = lat;
-
-        pickupLng = lng;
-
-
-        if (pickupMarker) {
-
-          pickupMarker.setLatLng(
-            [lat, lng]
-          );
-
-        }
-
-        else {
-
-          pickupMarker =
-            L.marker(
-              [lat, lng],
-              {
-                icon: pickupIcon
-              }
-            ).addTo(map);
-
-
-          pickupMarker.bindPopup(
-            "Pickup Location"
-          );
-
-        }
-
-
-        document
-          .getElementById("pickupCoords")
-          .innerText =
-          lat.toFixed(6) +
-          ", " +
-          lng.toFixed(6);
-
-
-        document
-          .getElementById("mapStatus")
-          .innerText =
-          "✅ Pickup selected. Now select Drop-off.";
-
-
-        selectionMode =
-          null;
-
-      }
-
-
-
-      // DROP-OFF
-
-      else if (
-        selectionMode === "dropoff"
-      ) {
-
-        dropoffLat = lat;
-
-        dropoffLng = lng;
-
-
-        if (dropoffMarker) {
-
-          dropoffMarker.setLatLng(
-            [lat, lng]
-          );
-
-        }
-
-        else {
-
-          dropoffMarker =
-            L.marker(
-              [lat, lng],
-              {
-                icon: dropoffIcon
-              }
-            ).addTo(map);
-
-
-          dropoffMarker.bindPopup(
-            "Drop-off Location"
-          );
-
-        }
-
-
-        document
-          .getElementById("dropoffCoords")
-          .innerText =
-          lat.toFixed(6) +
-          ", " +
-          lng.toFixed(6);
-
-
-        document
-          .getElementById("mapStatus")
-          .innerText =
-          "✅ Drop-off selected successfully.";
-
-
-        selectionMode =
-          null;
-
-      }
-
-    }
-  );
-
-
-
-  // ================================
-  // CLEAR MAP
-  // ================================
-
-  window.clearLocations =
-    function() {
-
-      pickupLat = null;
-
-      pickupLng = null;
-
-
-      dropoffLat = null;
-
-      dropoffLng = null;
-
-
-      if (pickupMarker) {
-
-        map.removeLayer(
-          pickupMarker
-        );
-
-        pickupMarker = null;
-
-      }
-
-
-      if (dropoffMarker) {
-
-        map.removeLayer(
-          dropoffMarker
-        );
-
-        dropoffMarker = null;
-
-      }
-
-
-      document
-        .getElementById("pickupCoords")
-        .innerText =
-        "Not selected";
-
-
-      document
-        .getElementById("dropoffCoords")
-        .innerText =
-        "Not selected";
-
-
-      document
-        .getElementById("mapStatus")
-        .innerText =
-        "Map cleared.";
-
-    };
-
-
-
-  // ================================
-  // SAVE TRIP
-  // ================================
-
-  window.saveTrip =
-    async function() {
-
+  /*
+   ==========================================================
+   LOAD EXISTING TRIP BUTTON
+   ==========================================================
+  */
+
+  document
+    .getElementById("loadTripBtn")
+    .addEventListener("click", async () => {
 
       const tripId =
         document
@@ -1953,337 +1386,544 @@
           .trim();
 
 
-      const status =
-        document
-          .getElementById("status")
-          .value;
-
-
-      const pickup =
-        document
-          .getElementById("pickup")
-          .value
-          .trim();
-
-
-      const dropoff =
-        document
-          .getElementById("dropoff")
-          .value
-          .trim();
-
-
-      const driverName =
-        document
-          .getElementById("driverName")
-          .value
-          .trim();
-
-
-      const driverPhoto =
-        document
-          .getElementById("driverPhoto")
-          .value
-          .trim();
-
-
-      const vehicle =
-        document
-          .getElementById("vehicle")
-          .value
-          .trim();
-
-
-      const vehicleColor =
-        document
-          .getElementById("vehicleColor")
-          .value
-          .trim();
-
-
-      const plate =
-        document
-          .getElementById("plate")
-          .value
-          .trim();
-
-
-      const rating =
-        document
-          .getElementById("rating")
-          .value
-          .trim();
-
-
-      const phone =
-        document
-          .getElementById("phone")
-          .value
-          .trim();
-
-
-
-      // VALIDATION
-
       if (!tripId) {
 
-        alert(
-          "Please enter a Trip ID."
-        );
+        currentTripMessage.className =
+          "status-box danger";
+
+        currentTripMessage.textContent =
+          "Enter a Trip ID first.";
 
         return;
-
       }
 
 
-      if (!pickup || !dropoff) {
+      await loadTrip(tripId);
 
-        alert(
-          "Please enter both pickup and drop-off names."
+      await setCurrentAdminTrip(tripId);
+
+
+      history.replaceState(
+        {},
+        "",
+        window.location.pathname +
+        "?trip=" +
+        encodeURIComponent(tripId)
+      );
+
+    });
+
+
+  /*
+   ==========================================================
+   NEW TRIP
+   ==========================================================
+  */
+
+  document
+    .getElementById("newTripBtn")
+    .addEventListener("click", async () => {
+
+      const confirmed =
+        confirm(
+          "Start a new trip?\n\n" +
+          "The previous trip will NOT be deleted. " +
+          "Only the Admin form will be cleared."
         );
 
-        return;
 
+      if (!confirmed) return;
+
+
+      /*
+       Stop watching previous trip
+      */
+
+      if (tripListener) {
+
+        tripListener();
+
+        tripListener = null;
       }
 
 
-      if (
-        pickupLat === null ||
-        pickupLng === null ||
-        dropoffLat === null ||
-        dropoffLng === null
-      ) {
-
-        alert(
-          "Please select both pickup and drop-off locations on the map."
-        );
-
-        return;
-
-      }
+      currentLoadedTripId = null;
 
 
-
-      // TRIP DATA
-
-      const tripData = {
-
-        status:
-          status,
-
-
-        pickup:
-          pickup,
-
-
-        dropoff:
-          dropoff,
-
-
-        pickupLocation: {
-
-          lat:
-            pickupLat,
-
-          lng:
-            pickupLng
-
-        },
-
-
-        dropoffLocation: {
-
-          lat:
-            dropoffLat,
-
-          lng:
-            dropoffLng
-
-        },
-
-
-        pickupLat:
-          pickupLat,
-
-
-        pickupLng:
-          pickupLng,
-
-
-        dropoffLat:
-          dropoffLat,
-
-
-        dropoffLng:
-          dropoffLng,
-
-
-        driverName:
-          driverName,
-
-
-        driverPhoto:
-          driverPhoto,
-
-
-        vehicle:
-          vehicle,
-
-
-        vehicleColor:
-          vehicleColor,
-
-
-        plate:
-          plate,
-
-
-        rating:
-          rating,
-
-
-        phone:
-          phone
-
-      };
-
-
+      /*
+       Remove current Admin trip from Firebase
+      */
 
       try {
 
-        /*
-          IMPORTANT:
-          update() only changes the fields above.
-          It does NOT delete the live GPS location.
-        */
-
         await update(
-          ref(
-            database,
-            "trips/" + tripId
-          ),
-          tripData
+          ref(database, "adminState"),
+          {
+            lastTripId: null,
+            updatedAt: Date.now()
+          }
         );
 
+      } catch (error) {
 
-        // Remember this Trip ID
-
-        localStorage.setItem(
-          "lastTripId",
-          tripId
-        );
-
-
-        currentLoadedTripId =
-          tripId;
-
-
-        // Update URL so reopening
-        // this exact Admin page can
-        // restore the same trip.
-
-        const newUrl =
-          window.location.pathname +
-          "?trip=" +
-          encodeURIComponent(
-            tripId
-          );
-
-
-        window.history.replaceState(
-          {},
-          "",
-          newUrl
-        );
-
-
-        updateLinks(
-          tripId
-        );
-
-
-        document
-          .getElementById("successBox")
-          .style.display =
-          "block";
-
-
-        document
-          .getElementById("mapStatus")
-          .innerText =
-          "✅ Trip saved successfully. This Trip ID is now remembered.";
-
-
-        watchTrip(
-          tripId
-        );
-
-
-        document
-          .getElementById("successBox")
-          .scrollIntoView({
-            behavior: "smooth"
-          });
-
+        console.error(error);
       }
 
 
-      catch (error) {
+      /*
+       Remove local fallback
+      */
 
-        console.error(
-          error
-        );
+      localStorage.removeItem(
+        "lastTripId"
+      );
 
 
-        alert(
-          "Could not save the trip. Please check Firebase and try again."
-        );
+      /*
+       Remove trip from URL
+      */
 
-      }
+      history.replaceState(
+        {},
+        "",
+        window.location.pathname
+      );
+
+
+      /*
+       Clear form
+      */
+
+      document.getElementById("tripId").value =
+        "";
+
+      document.getElementById("status").value =
+        "Trip started";
+
+      document.getElementById("pickup").value =
+        "";
+
+      document.getElementById("dropoff").value =
+        "";
+
+      document.getElementById("driverName").value =
+        "";
+
+      document.getElementById("driverPhoto").value =
+        "";
+
+      document.getElementById("phone").value =
+        "";
+
+      document.getElementById("vehicle").value =
+        "";
+
+      document.getElementById("vehicleColor").value =
+        "";
+
+      document.getElementById("plate").value =
+        "";
+
+      document.getElementById("rating").value =
+        "";
+
+      document.getElementById("pickupLat").value =
+        "";
+
+      document.getElementById("pickupLng").value =
+        "";
+
+      document.getElementById("dropoffLat").value =
+        "";
+
+      document.getElementById("dropoffLng").value =
+        "";
+
+
+      /*
+       Clear links
+      */
+
+      document.getElementById("driverLink").value =
+        "";
+
+      document.getElementById("teacherLink").value =
+        "";
+
+
+      /*
+       Clear map
+      */
+
+      clearMapMarkers();
+
+      map.setView(
+        [24.8607, 67.0011],
+        12
+      );
+
+
+      /*
+       Reset messages
+      */
+
+      currentTripBadge.innerHTML = "";
+
+      currentTripMessage.className =
+        "status-box warning";
+
+      currentTripMessage.textContent =
+        "New trip ready. Enter a new Trip ID and details.";
+
+      controlStatus.className =
+        "status-box warning";
+
+      controlStatus.textContent =
+        "No active trip.";
+
+      mapStatus.className =
+        "status-box warning";
+
+      mapStatus.textContent =
+        "New trip ready.";
+
+    });
+
+
+  /*
+   ==========================================================
+   SAVE / UPDATE TRIP
+   ==========================================================
+  */
+
+  document
+    .getElementById("saveTripBtn")
+    .addEventListener("click", saveTrip);
+
+
+  async function saveTrip() {
+
+    const tripId =
+      document
+        .getElementById("tripId")
+        .value
+        .trim();
+
+
+    const status =
+      document
+        .getElementById("status")
+        .value;
+
+
+    const pickup =
+      document
+        .getElementById("pickup")
+        .value
+        .trim();
+
+
+    const dropoff =
+      document
+        .getElementById("dropoff")
+        .value
+        .trim();
+
+
+    const pickupLat =
+      Number(
+        document
+          .getElementById("pickupLat")
+          .value
+      );
+
+
+    const pickupLng =
+      Number(
+        document
+          .getElementById("pickupLng")
+          .value
+      );
+
+
+    const dropoffLat =
+      Number(
+        document
+          .getElementById("dropoffLat")
+          .value
+      );
+
+
+    const dropoffLng =
+      Number(
+        document
+          .getElementById("dropoffLng")
+          .value
+      );
+
+
+    /*
+     --------------------------------------------------------
+     VALIDATION
+     --------------------------------------------------------
+    */
+
+    if (!tripId) {
+
+      alert("Please enter a Trip ID.");
+      return;
+    }
+
+
+    if (!pickup || !dropoff) {
+
+      alert(
+        "Please enter pickup and drop-off."
+      );
+
+      return;
+    }
+
+
+    if (
+      !isValidCoordinate(
+        pickupLat,
+        pickupLng
+      )
+    ) {
+
+      alert(
+        "Please enter valid pickup coordinates."
+      );
+
+      return;
+    }
+
+
+    if (
+      !isValidCoordinate(
+        dropoffLat,
+        dropoffLng
+      )
+    ) {
+
+      alert(
+        "Please enter valid drop-off coordinates."
+      );
+
+      return;
+    }
+
+
+    /*
+     --------------------------------------------------------
+     TRIP DATA
+     --------------------------------------------------------
+    */
+
+    const tripData = {
+
+      status: status,
+
+      pickup: pickup,
+
+      dropoff: dropoff,
+
+      pickupLocation: {
+        lat: pickupLat,
+        lng: pickupLng
+      },
+
+      dropoffLocation: {
+        lat: dropoffLat,
+        lng: dropoffLng
+      },
+
+      /*
+       Keep flat fields because your existing system uses them.
+      */
+
+      pickupLat: pickupLat,
+      pickupLng: pickupLng,
+
+      dropoffLat: dropoffLat,
+      dropoffLng: dropoffLng,
+
+      /*
+       Also preserve alternative field names.
+      */
+
+      pickupLatitude: pickupLat,
+      pickupLongitude: pickupLng,
+
+      dropoffLatitude: dropoffLat,
+      dropoffLongitude: dropoffLng,
+
+      driverName:
+        document
+          .getElementById("driverName")
+          .value
+          .trim(),
+
+      driverPhoto:
+        document
+          .getElementById("driverPhoto")
+          .value
+          .trim(),
+
+      vehicle:
+        document
+          .getElementById("vehicle")
+          .value
+          .trim(),
+
+      vehicleColor:
+        document
+          .getElementById("vehicleColor")
+          .value
+          .trim(),
+
+      plate:
+        document
+          .getElementById("plate")
+          .value
+          .trim(),
+
+      rating:
+        document
+          .getElementById("rating")
+          .value
+          .trim(),
+
+      phone:
+        document
+          .getElementById("phone")
+          .value
+          .trim(),
+
+      /*
+       If this is a new trip, make sharing active.
+      If updating an existing trip, don't accidentally
+      overwrite an existing sharing state.
+      */
+
+      ...(currentLoadedTripId !== tripId
+        ? {
+            sharingActive: true
+          }
+        : {}),
+
+      updatedAt: Date.now()
 
     };
 
 
+    /*
+     --------------------------------------------------------
+     SAVE TRIP
+     --------------------------------------------------------
+    */
 
-  // ================================
-  // COMPLETE RIDE
-  // ================================
+    try {
 
-  window.completeRide =
-    async function() {
-
-
-      const tripId =
-        document
-          .getElementById("tripId")
-          .value
-          .trim();
+      await update(
+        ref(
+          database,
+          "trips/" + tripId
+        ),
+        tripData
+      );
 
 
-      if (!tripId) {
+      /*
+       This is the important part:
+       Firebase remembers which trip Admin is currently
+       controlling.
+      */
+
+      await setCurrentAdminTrip(
+        tripId
+      );
+
+
+      currentLoadedTripId =
+        tripId;
+
+
+      /*
+       Update URL
+      */
+
+      history.replaceState(
+        {},
+        "",
+        window.location.pathname +
+        "?trip=" +
+        encodeURIComponent(tripId)
+      );
+
+
+      /*
+       Reload from Firebase so everything is confirmed.
+      */
+
+      await loadTrip(tripId);
+
+      await setCurrentAdminTrip(tripId);
+
+
+      currentTripMessage.className =
+        "status-box success";
+
+      currentTripMessage.textContent =
+        "Trip saved successfully. This is now your current trip.";
+
+      alert(
+        "Trip saved successfully!"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      currentTripMessage.className =
+        "status-box danger";
+
+      currentTripMessage.textContent =
+        "Could not save trip: " +
+        error.message;
+    }
+
+  }
+
+
+  /*
+   ==========================================================
+   STOP SHARING
+   ==========================================================
+  */
+
+  document
+    .getElementById("stopSharingBtn")
+    .addEventListener("click", async () => {
+
+      if (!currentLoadedTripId) {
 
         alert(
-          "Please enter the Trip ID first."
+          "There is no current trip."
         );
 
         return;
-
       }
 
 
       const confirmed =
         confirm(
-          "Are you sure you want to complete this ride?\n\n" +
-          "The tracking viewer will show that the ride has ended."
+          "Stop sharing the driver's live location?"
         );
 
 
-      if (!confirmed) {
-
-        return;
-
-      }
-
+      if (!confirmed) return;
 
 
       try {
@@ -2291,140 +1931,592 @@
         await update(
           ref(
             database,
-            "trips/" + tripId
+            "trips/" +
+            currentLoadedTripId
           ),
           {
-
-            status:
-              "Trip completed",
-
-
-            completedAt:
-              Date.now(),
-
-
-            sharingActive:
-              false
-
+            sharingActive: false,
+            sharingStoppedAt: Date.now()
           }
         );
 
 
+        controlStatus.className =
+          "status-box warning";
+
+        controlStatus.textContent =
+          "Location sharing has been stopped.";
+
+      } catch (error) {
+
         alert(
-          "🏁 Ride completed successfully!"
+          "Could not stop sharing: " +
+          error.message
         );
 
       }
 
+    });
 
-      catch (error) {
 
-        console.error(
-          error
+  /*
+   ==========================================================
+   COMPLETE RIDE
+   ==========================================================
+  */
+
+  document
+    .getElementById("completeRideBtn")
+    .addEventListener("click", async () => {
+
+      if (!currentLoadedTripId) {
+
+        alert(
+          "There is no current trip."
+        );
+
+        return;
+      }
+
+
+      const confirmed =
+        confirm(
+          "Complete this ride?\n\n" +
+          "The trip will be marked as completed and " +
+          "the driver will no longer be able to update its location."
         );
 
 
+      if (!confirmed) return;
+
+
+      try {
+
+        await update(
+          ref(
+            database,
+            "trips/" +
+            currentLoadedTripId
+          ),
+          {
+            status: "Trip completed",
+            completedAt: Date.now(),
+            sharingActive: false
+          }
+        );
+
+
+        /*
+         ----------------------------------------------------
+         Remove it from CURRENT ADMIN TRIP.
+         The actual trip is NOT deleted.
+         It remains in history.
+         ----------------------------------------------------
+        */
+
+        await update(
+          ref(database, "adminState"),
+          {
+            lastTripId: null,
+            updatedAt: Date.now()
+          }
+        );
+
+
+        localStorage.removeItem(
+          "lastTripId"
+        );
+
+
+        currentTripBadge.innerHTML =
+          '<span class="completed-badge">Completed</span>';
+
+        currentTripMessage.className =
+          "status-box warning";
+
+        currentTripMessage.textContent =
+          "Ride completed successfully.";
+
+        controlStatus.className =
+          "status-box warning";
+
+        controlStatus.textContent =
+          "Trip completed. It is now in Trip History.";
+
+
+        /*
+         Keep the current trip ID visible so you can still
+         see which trip was completed.
+        */
+
         alert(
-          "Could not complete the ride. Please try again."
+          "Ride completed successfully!"
+        );
+
+
+      } catch (error) {
+
+        alert(
+          "Could not complete ride: " +
+          error.message
         );
 
       }
 
-    };
+    });
 
 
+  /*
+   ==========================================================
+   HISTORY
+   ==========================================================
+  */
 
-  // ================================
-  // COPY DRIVER LINK
-  // ================================
+  function startHistoryListener() {
 
-  window.copyDriverLink =
-    function() {
+    if (historyListener) {
 
+      historyListener();
+
+      historyListener = null;
+    }
+
+
+    historyListener =
+      onValue(
+        ref(database, "trips"),
+        (snapshot) => {
+
+          historyContainer.innerHTML = "";
+
+
+          if (!snapshot.exists()) {
+
+            historyContainer.innerHTML =
+              '<div class="small">No trips found.</div>';
+
+            return;
+          }
+
+
+          const trips =
+            snapshot.val();
+
+
+          const tripEntries =
+            Object.entries(trips);
+
+
+          /*
+           Sort newest updated first.
+          */
+
+          tripEntries.sort(
+            (a, b) => {
+
+              const timeA =
+                a[1]?.updatedAt ||
+                a[1]?.completedAt ||
+                0;
+
+              const timeB =
+                b[1]?.updatedAt ||
+                b[1]?.completedAt ||
+                0;
+
+              return timeB - timeA;
+            }
+          );
+
+
+          tripEntries.forEach(
+            ([tripId, trip]) => {
+
+              const item =
+                document.createElement("div");
+
+              item.className =
+                "trip-history-item";
+
+
+              const status =
+                trip.status ||
+                "Unknown";
+
+
+              const badge =
+                status === "Trip completed"
+                  ? '<span class="completed-badge">Completed</span>'
+                  : '<span class="current-badge">Active</span>';
+
+
+              item.innerHTML = `
+                <strong>
+                  ${escapeHtml(tripId)}
+                  ${badge}
+                </strong>
+
+                <div class="small">
+                  ${escapeHtml(trip.pickup || "No pickup")}
+                  →
+                  ${escapeHtml(trip.dropoff || "No drop-off")}
+                </div>
+
+                <div class="small">
+                  Driver:
+                  ${escapeHtml(trip.driverName || "Not specified")}
+                </div>
+
+                <button class="blue-btn load-history-btn">
+                  Load Trip
+                </button>
+              `;
+
+
+              const button =
+                item.querySelector(
+                  ".load-history-btn"
+                );
+
+
+              button.addEventListener(
+                "click",
+                async () => {
+
+                  document
+                    .getElementById("tripId")
+                    .value = tripId;
+
+                  await loadTrip(tripId);
+
+                  await setCurrentAdminTrip(
+                    tripId
+                  );
+
+
+                  history.replaceState(
+                    {},
+                    "",
+                    window.location.pathname +
+                    "?trip=" +
+                    encodeURIComponent(tripId)
+                  );
+
+                }
+              );
+
+
+              historyContainer.appendChild(
+                item
+              );
+
+            }
+          );
+
+        }
+      );
+
+  }
+
+
+  /*
+   ==========================================================
+   LINKS
+   ==========================================================
+  */
+
+  function updateLinks(tripId) {
+
+    if (!tripId) return;
+
+
+    const baseUrl =
+      window.location.origin +
+      window.location.pathname
+        .replace(
+          /admin\.html$/,
+          ""
+        );
+
+
+    const driverUrl =
+      baseUrl +
+      "driver.html?trip=" +
+      encodeURIComponent(tripId);
+
+
+    const teacherUrl =
+      baseUrl +
+      "?trip=" +
+      encodeURIComponent(tripId);
+
+
+    document
+      .getElementById("driverLink")
+      .value =
+      driverUrl;
+
+
+    document
+      .getElementById("teacherLink")
+      .value =
+      teacherUrl;
+
+  }
+
+
+  /*
+   ==========================================================
+   COPY DRIVER LINK
+   ==========================================================
+  */
+
+  document
+    .getElementById("copyDriverBtn")
+    .addEventListener("click", async () => {
 
       const link =
         document
           .getElementById("driverLink")
-          .innerText;
+          .value;
+
+      if (!link) return;
+
+      await copyText(link);
+
+      alert(
+        "Driver link copied!"
+      );
+
+    });
 
 
-      navigator.clipboard
-        .writeText(link)
+  /*
+   ==========================================================
+   COPY TEACHER LINK
+   ==========================================================
+  */
 
-
-        .then(
-          function() {
-
-            alert(
-              "Driver link copied!"
-            );
-
-          }
-        )
-
-
-        .catch(
-          function() {
-
-            prompt(
-              "Copy this Driver GPS link:",
-              link
-            );
-
-          }
-        );
-
-    };
-
-
-
-  // ================================
-  // COPY TRACKING LINK
-  // ================================
-
-  window.copyTrackingLink =
-    function() {
-
+  document
+    .getElementById("copyTeacherBtn")
+    .addEventListener("click", async () => {
 
       const link =
         document
-          .getElementById("trackingLink")
-          .innerText;
+          .getElementById("teacherLink")
+          .value;
+
+      if (!link) return;
+
+      await copyText(link);
+
+      alert(
+        "Teacher tracking link copied!"
+      );
+
+    });
 
 
-      navigator.clipboard
-        .writeText(link)
+  /*
+   ==========================================================
+   COPY HELPER
+   ==========================================================
+  */
+
+  async function copyText(text) {
+
+    try {
+
+      await navigator.clipboard.writeText(
+        text
+      );
+
+    } catch {
+
+      const textarea =
+        document.createElement("textarea");
+
+      textarea.value =
+        text;
+
+      document.body.appendChild(
+        textarea
+      );
+
+      textarea.select();
+
+      document.execCommand(
+        "copy"
+      );
+
+      textarea.remove();
+
+    }
+
+  }
 
 
-        .then(
-          function() {
+  /*
+   ==========================================================
+   LOGOUT
+   ==========================================================
+  */
 
-            alert(
-              "Teacher tracking link copied!"
-            );
+  document
+    .getElementById("logoutBtn")
+    .addEventListener("click", async () => {
 
-          }
-        )
+      await signOut(auth);
+
+    });
 
 
-        .catch(
-          function() {
+  /*
+   ==========================================================
+   MAP HELPERS
+   ==========================================================
+  */
 
-            prompt(
-              "Copy this Teacher Tracking link:",
-              link
-            );
+  function clearMapMarkers() {
 
-          }
+    if (pickupMarker) {
+
+      map.removeLayer(
+        pickupMarker
+      );
+
+      pickupMarker = null;
+    }
+
+
+    if (dropoffMarker) {
+
+      map.removeLayer(
+        dropoffMarker
+      );
+
+      dropoffMarker = null;
+    }
+
+
+    if (driverMarker) {
+
+      map.removeLayer(
+        driverMarker
+      );
+
+      driverMarker = null;
+    }
+
+  }
+
+
+  function fitMap() {
+
+    const markers = [];
+
+
+    if (pickupMarker) {
+
+      markers.push(
+        pickupMarker
+      );
+
+    }
+
+
+    if (dropoffMarker) {
+
+      markers.push(
+        dropoffMarker
+      );
+
+    }
+
+
+    if (driverMarker) {
+
+      markers.push(
+        driverMarker
+      );
+
+    }
+
+
+    if (markers.length === 1) {
+
+      map.setView(
+        markers[0].getLatLng(),
+        15
+      );
+
+    } else if (markers.length > 1) {
+
+      const group =
+        L.featureGroup(
+          markers
         );
 
-    };
+      map.fitBounds(
+        group.getBounds().pad(0.2)
+      );
 
+    }
+
+  }
+
+
+  /*
+   ==========================================================
+   COORDINATE VALIDATION
+   ==========================================================
+  */
+
+  function isValidCoordinate(
+    lat,
+    lng
+  ) {
+
+    return (
+      Number.isFinite(
+        Number(lat)
+      ) &&
+      Number.isFinite(
+        Number(lng)
+      ) &&
+      Number(lat) >= -90 &&
+      Number(lat) <= 90 &&
+      Number(lng) >= -180 &&
+      Number(lng) <= 180
+    );
+
+  }
+
+
+  /*
+   ==========================================================
+   HTML ESCAPE
+   ==========================================================
+  */
+
+  function escapeHtml(value) {
+
+    return String(value)
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
+
+  }
 
 </script>
 
 
-</body>
+<script
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
 
+</body>
 </html>
 ```
