@@ -25,242 +25,180 @@
     }
 
     header {
-      background: #111;
+      background: #111827;
       color: white;
-      padding: 18px 25px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 20px;
+      text-align: center;
+      position: relative;
     }
 
     header h1 {
       margin: 0;
-      font-size: 22px;
+      font-size: 28px;
     }
 
-    button {
+    header p {
+      margin: 5px 0 0;
+      opacity: 0.8;
+    }
+
+    .logout-btn {
+      position: absolute;
+      right: 20px;
+      top: 20px;
+      background: #dc2626;
+      color: white;
       border: none;
-      border-radius: 8px;
-      padding: 11px 16px;
+      padding: 10px 15px;
+      border-radius: 6px;
       cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .btn-primary {
-      background: #111;
-      color: white;
-    }
-
-    .btn-green {
-      background: #198754;
-      color: white;
-    }
-
-    .btn-red {
-      background: #dc3545;
-      color: white;
-    }
-
-    .btn-blue {
-      background: #0d6efd;
-      color: white;
-    }
-
-    .btn-gray {
-      background: #ddd;
-      color: #222;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1000px;
       margin: 25px auto;
       padding: 0 15px;
     }
 
     .card {
       background: white;
-      border-radius: 12px;
       padding: 20px;
       margin-bottom: 20px;
+      border-radius: 10px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
 
-    .card h2 {
+    h2 {
       margin-top: 0;
-      font-size: 19px;
-    }
-
-    .login-box {
-      max-width: 450px;
-      margin: 60px auto;
     }
 
     label {
       display: block;
+      margin-top: 12px;
+      margin-bottom: 5px;
       font-weight: bold;
-      margin: 12px 0 6px;
     }
 
     input,
     select {
       width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-    }
-
-    .search-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 5px;
-    }
-
-    .search-row input {
-      flex: 1;
-    }
-
-    .search-row button {
-      white-space: nowrap;
-    }
-
-    .location-box {
-      position: relative;
-      margin-bottom: 18px;
-    }
-
-    .suggestions {
-      position: absolute;
-      z-index: 1000;
-      left: 0;
-      right: 0;
-      background: white;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      max-height: 220px;
-      overflow-y: auto;
-      display: none;
-    }
-
-    .suggestion {
       padding: 11px;
-      border-bottom: 1px solid #eee;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .suggestion:hover {
-      background: #f0f0f0;
-    }
-
-    .selected-location {
-      margin-top: 7px;
-      font-size: 13px;
-      color: #555;
-    }
-
-    .coordinates {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .coordinates input {
-      background: #f3f3f3;
-    }
-
-    #map {
-      width: 100%;
-      height: 500px;
-      border-radius: 12px;
-      margin-top: 15px;
-    }
-
-    .details-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
-    }
-
-    .full {
-      grid-column: 1 / -1;
-    }
-
-    .links-box {
-      background: #f7f7f7;
-      padding: 12px;
-      border-radius: 8px;
-      word-break: break-all;
-      margin-top: 8px;
-    }
-
-    .links-box strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-
-    .control-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .status {
-      padding: 10px 12px;
-      border-radius: 8px;
-      background: #eee;
-      margin-bottom: 15px;
-      font-weight: bold;
-    }
-
-    .message {
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 10px;
-      display: none;
-    }
-
-    .success {
-      background: #d1e7dd;
-      color: #0f5132;
-    }
-
-    .error {
-      background: #f8d7da;
-      color: #842029;
-    }
-
-    .history-item {
-      border: 1px solid #ddd;
-      padding: 13px;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      background: #fafafa;
-    }
-
-    .history-item strong {
+      border: 1px solid #ccc;
+      border-radius: 6px;
       font-size: 15px;
     }
 
-    .history-meta {
-      font-size: 13px;
-      color: #555;
-      margin: 5px 0;
+    .login-container {
+      max-width: 400px;
+      margin: 70px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.1);
     }
 
-    @media (max-width: 700px) {
-      .details-grid {
-        grid-template-columns: 1fr;
+    button {
+      border: none;
+      border-radius: 6px;
+      padding: 11px 16px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .login-btn {
+      width: 100%;
+      margin-top: 18px;
+      background: #111827;
+      color: white;
+    }
+
+    .map-buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin: 15px 0;
+    }
+
+    .pickup-btn {
+      background: #16a34a;
+      color: white;
+    }
+
+    .dropoff-btn {
+      background: #dc2626;
+      color: white;
+    }
+
+    .clear-btn {
+      background: #6b7280;
+      color: white;
+    }
+
+    #adminMap {
+      width: 100%;
+      height: 450px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .status-message {
+      background: #f3f4f6;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+    }
+
+    .coordinates {
+      margin-top: 15px;
+      line-height: 1.8;
+      background: #f9fafb;
+      padding: 12px;
+      border-radius: 6px;
+    }
+
+    .save-btn {
+      background: #2563eb;
+      color: white;
+      margin-right: 8px;
+    }
+
+    .complete-btn {
+      background: #16a34a;
+      color: white;
+    }
+
+    .success {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background: #ecfdf5;
+      border: 1px solid #10b981;
+      border-radius: 8px;
+    }
+
+    .success a {
+      word-break: break-all;
+      color: #2563eb;
+    }
+
+    .error {
+      color: #dc2626;
+      margin-top: 10px;
+    }
+
+    .section-note {
+      color: #666;
+      font-size: 14px;
+    }
+
+    @media (max-width: 600px) {
+      #adminMap {
+        height: 350px;
       }
 
-      .coordinates {
-        grid-template-columns: 1fr;
-      }
-
-      #map {
-        height: 400px;
+      .logout-btn {
+        position: static;
+        margin-top: 15px;
       }
     }
   </style>
@@ -269,1805 +207,192 @@
 <body>
 
 <header>
-  <h1>Yango Tracking — Admin</h1>
-  <button id="logoutBtn" class="btn-gray" style="display:none;">
+  <h1>Yango Tracking</h1>
+  <p>Admin Panel</p>
+
+  <button
+    id="logoutButton"
+    class="logout-btn"
+    onclick="logoutAdmin()"
+    style="display:none;"
+  >
     Logout
   </button>
 </header>
 
-<div class="container">
 
-  <!-- LOGIN -->
-  <div id="loginSection" class="card login-box">
-    <h2>Admin Login</h2>
+<!-- LOGIN -->
 
-    <label>Email</label>
-    <input id="email" type="email" placeholder="Admin email">
+<div id="loginScreen" class="login-container">
 
-    <label>Password</label>
-    <input id="password" type="password" placeholder="Password">
+  <h2>Admin Login</h2>
 
-    <br><br>
+  <label>Email</label>
+  <input
+    id="loginEmail"
+    type="email"
+    placeholder="Admin email"
+  >
 
-    <button id="loginBtn" class="btn-primary">
-      Login
-    </button>
+  <label>Password</label>
+  <input
+    id="loginPassword"
+    type="password"
+    placeholder="Password"
+  >
 
-    <div id="loginMessage" class="message"></div>
-  </div>
+  <button
+    class="login-btn"
+    onclick="loginAdmin()"
+  >
+    Login
+  </button>
 
+  <div id="loginError" class="error"></div>
 
-  <!-- ADMIN PANEL -->
-  <div id="adminSection" style="display:none;">
-
-    <!-- CURRENT TRIP -->
-    <div class="card">
-      <h2>Current Trip</h2>
-
-      <div id="currentTripStatus" class="status">
-        No current trip loaded.
-      </div>
-
-      <div style="display:flex; gap:10px; flex-wrap:wrap;">
-        <button id="newTripBtn" class="btn-primary">
-          + New Trip
-        </button>
-
-        <input
-          id="existingTripId"
-          placeholder="Enter existing Trip ID"
-          style="max-width:250px;"
-        >
-
-        <button id="loadExistingBtn" class="btn-blue">
-          Load Existing Trip
-        </button>
-      </div>
-    </div>
-
-
-    <!-- TRIP DETAILS -->
-    <div class="card">
-      <h2>Trip Details</h2>
-
-      <div class="details-grid">
-
-        <div>
-          <label>Trip ID</label>
-          <input id="tripId" placeholder="Example: 76EEH8">
-        </div>
-
-        <div>
-          <label>Status</label>
-          <input id="status" value="Ready" readonly>
-        </div>
-
-        <div>
-          <label>Pickup Location</label>
-          <input id="pickup" placeholder="Search pickup location">
-        </div>
-
-        <div>
-          <label>Drop-off Location</label>
-          <input id="dropoff" placeholder="Search drop-off location">
-        </div>
-
-        <div>
-          <label>Driver Name</label>
-          <input id="driverName" placeholder="Driver name">
-        </div>
-
-        <div>
-          <label>Driver Phone</label>
-          <input id="phone" placeholder="Phone number">
-        </div>
-
-        <div>
-          <label>Vehicle</label>
-          <input id="vehicle" placeholder="Vehicle">
-        </div>
-
-        <div>
-          <label>Vehicle Color</label>
-          <input id="vehicleColor" placeholder="Color">
-        </div>
-
-        <div>
-          <label>Plate Number</label>
-          <input id="plate" placeholder="Plate number">
-        </div>
-
-        <div>
-          <label>Rating</label>
-          <input id="rating" placeholder="Rating">
-        </div>
-
-      </div>
-    </div>
-
-
-    <!-- LOCATION SEARCH -->
-    <div class="card">
-      <h2>Pickup & Drop-off</h2>
-
-      <p style="font-size:13px;color:#666;">
-        Search for each location below, select the result, then drag the
-        marker on the map if you want to fine-tune the exact point.
-      </p>
-
-      <!-- PICKUP -->
-      <div class="location-box">
-
-        <label>Pickup</label>
-
-        <div class="search-row">
-          <input
-            id="pickupSearch"
-            placeholder="Search pickup location..."
-            autocomplete="off"
-          >
-
-          <button id="pickupSearchBtn" class="btn-blue">
-            Search
-          </button>
-        </div>
-
-        <div id="pickupSuggestions" class="suggestions"></div>
-
-        <div id="pickupSelected" class="selected-location">
-          No pickup point selected.
-        </div>
-
-        <div class="coordinates">
-          <input id="pickupLat" placeholder="Latitude" readonly>
-          <input id="pickupLng" placeholder="Longitude" readonly>
-        </div>
-
-      </div>
-
-
-      <!-- DROP-OFF -->
-      <div class="location-box">
-
-        <label>Drop-off</label>
-
-        <div class="search-row">
-          <input
-            id="dropoffSearch"
-            placeholder="Search drop-off location..."
-            autocomplete="off"
-          >
-
-          <button id="dropoffSearchBtn" class="btn-blue">
-            Search
-          </button>
-        </div>
-
-        <div id="dropoffSuggestions" class="suggestions"></div>
-
-        <div id="dropoffSelected" class="selected-location">
-          No drop-off point selected.
-        </div>
-
-        <div class="coordinates">
-          <input id="dropoffLat" placeholder="Latitude" readonly>
-          <input id="dropoffLng" placeholder="Longitude" readonly>
-        </div>
-
-      </div>
-
-      <button id="saveTripBtn" class="btn-green">
-        Save / Create Trip
-      </button>
-
-      <div id="saveMessage" class="message"></div>
-    </div>
-
-
-    <!-- MAP -->
-    <div class="card">
-      <h2>Pickup & Drop-off Map</h2>
-
-      <p style="font-size:13px;color:#666;">
-        Pickup and drop-off markers can be dragged manually.
-      </p>
-
-      <div id="map"></div>
-    </div>
-
-
-    <!-- TRACKING LINKS -->
-    <div class="card">
-      <h2>Tracking Links</h2>
-
-      <div class="links-box">
-        <strong>Driver Link</strong>
-        <span id="driverLink">—</span>
-      </div>
-
-      <br>
-
-      <div class="links-box">
-        <strong>Teacher Tracking Link</strong>
-        <span id="teacherLink">—</span>
-      </div>
-    </div>
-
-
-    <!-- CONTROLS -->
-    <div class="card">
-      <h2>Trip Controls</h2>
-
-      <div class="control-row">
-
-        <button id="stopSharingBtn" class="btn-red">
-          Stop Sharing Location
-        </button>
-
-        <button id="completeRideBtn" class="btn-primary">
-          Complete Ride
-        </button>
-
-      </div>
-
-      <div id="controlMessage" class="message"></div>
-    </div>
-
-
-    <!-- HISTORY -->
-    <div class="card">
-      <h2>Trip History</h2>
-
-      <div id="history">
-        Loading history...
-      </div>
-    </div>
-
-  </div>
 </div>
 
 
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- ADMIN PANEL -->
 
+<div class="container" id="adminPanel" style="display:none;">
 
-<script type="module">
+  <!-- TRIP DETAILS -->
 
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+  <div class="card">
 
-import {
-  getDatabase,
-  ref,
-  update,
-  get,
-  onValue
-} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+    <h2>Trip Details</h2>
 
-import {
-  getAuth,
-  onAuthStateChanged,
-  signInWithEmailAndPassword,
-  signOut
-} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+    <label>Trip ID</label>
+    <input
+      id="tripId"
+      placeholder="Example: trip001"
+    >
 
+    <label>Trip Status</label>
 
-// ======================================================
-// FIREBASE CONFIG
-// KEEP YOUR EXACT WORKING FIREBASE CONFIG HERE
-// ======================================================
+    <select id="status">
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCEaUviM45cSPcs8Te6G0PqsE5imFR2TYE",
-  authDomain: "yango-tracking.firebaseapp.com",
-  databaseURL: "https://yango-tracking-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "yango-tracking",
-  storageBucket: "yango-tracking.firebasestorage.app",
-  messagingSenderId: "YOUR_EXISTING_MESSAGING_SENDER_ID",
-  appId: "YOUR_EXISTING_FIREBASE_APP_ID"
-};
+      <option>Driver is on the way</option>
+      <option>Driver arrived</option>
+      <option>Trip started</option>
+      <option>Trip completed</option>
 
+    </select>
 
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
-const auth = getAuth(app);
 
-const ADMIN_UID = "LqKhVP1lsQYV7ehUYVqqUlLeTPj2";
+    <label>Pickup Location Name</label>
 
+    <input
+      id="pickup"
+      placeholder="Example: Clifton Block 5"
+    >
 
-// ======================================================
-// ELEMENTS
-// ======================================================
 
-const loginSection = document.getElementById("loginSection");
-const adminSection = document.getElementById("adminSection");
+    <label>Drop-off Location Name</label>
 
-const emailInput = document.getElementById("email");
-const passwordInput = document.getElementById("password");
+    <input
+      id="dropoff"
+      placeholder="Example: Dolmen Mall Clifton"
+    >
 
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
+  </div>
 
-const loginMessage = document.getElementById("loginMessage");
-const saveMessage = document.getElementById("saveMessage");
-const controlMessage = document.getElementById("controlMessage");
 
-const tripIdInput = document.getElementById("tripId");
+  <!-- MAP -->
 
-const pickupInput = document.getElementById("pickup");
-const dropoffInput = document.getElementById("dropoff");
+  <div class="card">
 
-const driverNameInput = document.getElementById("driverName");
-const phoneInput = document.getElementById("phone");
-const vehicleInput = document.getElementById("vehicle");
-const vehicleColorInput = document.getElementById("vehicleColor");
-const plateInput = document.getElementById("plate");
-const ratingInput = document.getElementById("rating");
-const statusInput = document.getElementById("status");
+    <h2>Route Locations</h2>
 
-const pickupSearch = document.getElementById("pickupSearch");
-const dropoffSearch = document.getElementById("dropoffSearch");
+    <p class="section-note">
+      Enter the pickup and drop-off names above, then select each point on the map.
+    </p>
 
-const pickupSuggestions =
-  document.getElementById("pickupSuggestions");
 
-const dropoffSuggestions =
-  document.getElementById("dropoffSuggestions");
+    <div class="map-buttons">
 
-const pickupSelected =
-  document.getElementById("pickupSelected");
+      <button
+        type="button"
+        class="pickup-btn"
+        onclick="selectPickup()"
+      >
+        📍 Set Pickup
+      </button>
 
-const dropoffSelected =
-  document.getElementById("dropoffSelected");
 
-const pickupLatInput =
-  document.getElementById("pickupLat");
+      <button
+        type="button"
+        class="dropoff-btn"
+        onclick="selectDropoff()"
+      >
+        🔴 Set Drop-off
+      </button>
 
-const pickupLngInput =
-  document.getElementById("pickupLng");
 
-const dropoffLatInput =
-  document.getElementById("dropoffLat");
+      <button
+        type="button"
+        class="clear-btn"
+        onclick="clearLocations()"
+      >
+        Clear Map
+      </button>
 
-const dropoffLngInput =
-  document.getElementById("dropoffLng");
+    </div>
 
 
-// ======================================================
-// MAP
-// ======================================================
+    <div
+      id="mapStatus"
+      class="status-message"
+    >
+      Select Pickup or Drop-off, then click the map.
+    </div>
 
-const map = L.map("map").setView(
-  [24.8607, 67.0011],
-  12
-);
 
-L.tileLayer(
-  "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-  {
-    maxZoom: 19,
-    attribution: "&copy; OpenStreetMap contributors"
-  }
-).addTo(map);
+    <div id="adminMap"></div>
 
 
-let pickupMarker = null;
-let dropoffMarker = null;
-let driverMarker = null;
+    <div class="coordinates">
 
+      <strong>Pickup coordinates:</strong>
+      <span id="pickupCoords">Not selected</span>
 
-// ======================================================
-// MAP MARKERS
-// ======================================================
+      <br>
 
-function setPickupMarker(lat, lng, text = "Pickup") {
+      <strong>Drop-off coordinates:</strong>
+      <span id="dropoffCoords">Not selected</span>
 
-  if (pickupMarker) {
-    pickupMarker.setLatLng([lat, lng]);
-  } else {
+    </div>
 
-    pickupMarker = L.marker(
-      [lat, lng],
-      {
-        draggable: true
-      }
-    ).addTo(map);
+  </div>
 
-    pickupMarker.bindPopup("Pickup").openPopup();
 
-    pickupMarker.on("dragend", function() {
+  <!-- DRIVER DETAILS -->
 
-      const position = pickupMarker.getLatLng();
+  <div class="card">
 
-      pickupLatInput.value = position.lat.toFixed(6);
-      pickupLngInput.value = position.lng.toFixed(6);
+    <h2>Driver Details</h2>
 
-      pickupSelected.textContent =
-        "Pickup point fixed at: " +
-        position.lat.toFixed(6) +
-        ", " +
-        position.lng.toFixed(6);
-    });
-  }
 
-  pickupMarker.setPopupContent(text);
+    <label>Driver Name</label>
 
-  pickupLatInput.value = Number(lat).toFixed(6);
-  pickupLngInput.value = Number(lng).toFixed(6);
-}
+    <input
+      id="driverName"
+      placeholder="Example: Ahmed Khan"
+    >
 
 
-function setDropoffMarker(lat, lng, text = "Drop-off") {
+    <label>Driver Photo URL</label>
 
-  if (dropoffMarker) {
-    dropoffMarker.setLatLng([lat, lng]);
-  } else {
+    <input
+      id="driverPhoto"
+      placeholder="Driver photo URL"
+    >
 
-    dropoffMarker = L.marker(
-      [lat, lng],
-      {
-        draggable: true
-      }
-    ).addTo(map);
 
-    dropoffMarker.bindPopup("Drop-off").openPopup();
+    <label>Vehicle</label>
 
-    dropoffMarker.on("dragend", function() {
-
-      const position = dropoffMarker.getLatLng();
-
-      dropoffLatInput.value =
-        position.lat.toFixed(6);
-
-      dropoffLngInput.value =
-        position.lng.toFixed(6);
-
-      dropoffSelected.textContent =
-        "Drop-off point fixed at: " +
-        position.lat.toFixed(6) +
-        ", " +
-        position.lng.toFixed(6);
-    });
-  }
-
-  dropoffMarker.setPopupContent(text);
-
-  dropoffLatInput.value = Number(lat).toFixed(6);
-  dropoffLngInput.value = Number(lng).toFixed(6);
-}
-
-
-function fitMapToPoints() {
-
-  const points = [];
-
-  if (pickupMarker) {
-    points.push(pickupMarker.getLatLng());
-  }
-
-  if (dropoffMarker) {
-    points.push(dropoffMarker.getLatLng());
-  }
-
-  if (driverMarker) {
-    points.push(driverMarker.getLatLng());
-  }
-
-  if (points.length === 1) {
-    map.setView(points[0], 15);
-  }
-
-  if (points.length > 1) {
-    map.fitBounds(
-      L.latLngBounds(points),
-      {
-        padding: [40, 40]
-      }
-    );
-  }
-}
-
-
-// ======================================================
-// LOCATION SEARCH
-// ======================================================
-
-async function searchLocation(query, type) {
-
-  if (!query.trim()) {
-    return;
-  }
-
-  const suggestionBox =
-    type === "pickup"
-      ? pickupSuggestions
-      : dropoffSuggestions;
-
-  suggestionBox.style.display = "block";
-  suggestionBox.innerHTML =
-    "<div class='suggestion'>Searching...</div>";
-
-  try {
-
-    const url =
-      "https://nominatim.openstreetmap.org/search?" +
-      new URLSearchParams({
-        q: query,
-        format: "json",
-        limit: "5",
-        countrycodes: "pk"
-      });
-
-    const response = await fetch(url, {
-      headers: {
-        "Accept": "application/json"
-      }
-    });
-
-    const results = await response.json();
-
-    suggestionBox.innerHTML = "";
-
-    if (!results.length) {
-
-      suggestionBox.innerHTML =
-        "<div class='suggestion'>No location found.</div>";
-
-      return;
-    }
-
-    results.forEach(result => {
-
-      const item =
-        document.createElement("div");
-
-      item.className = "suggestion";
-      item.textContent = result.display_name;
-
-      item.addEventListener("click", () => {
-
-        const lat = Number(result.lat);
-        const lng = Number(result.lon);
-
-        if (type === "pickup") {
-
-          pickupInput.value =
-            result.display_name;
-
-          pickupSearch.value =
-            result.display_name;
-
-          pickupSelected.textContent =
-            result.display_name;
-
-          setPickupMarker(
-            lat,
-            lng,
-            "Pickup"
-          );
-
-        } else {
-
-          dropoffInput.value =
-            result.display_name;
-
-          dropoffSearch.value =
-            result.display_name;
-
-          dropoffSelected.textContent =
-            result.display_name;
-
-          setDropoffMarker(
-            lat,
-            lng,
-            "Drop-off"
-          );
-        }
-
-        suggestionBox.style.display = "none";
-
-        fitMapToPoints();
-      });
-
-      suggestionBox.appendChild(item);
-    });
-
-  } catch (error) {
-
-    suggestionBox.innerHTML =
-      "<div class='suggestion'>Search failed. Try again.</div>";
-
-    console.error(error);
-  }
-}
-
-
-document
-  .getElementById("pickupSearchBtn")
-  .addEventListener("click", () => {
-
-    searchLocation(
-      pickupSearch.value,
-      "pickup"
-    );
-  });
-
-
-document
-  .getElementById("dropoffSearchBtn")
-  .addEventListener("click", () => {
-
-    searchLocation(
-      dropoffSearch.value,
-      "dropoff"
-    );
-  });
-
-
-pickupSearch.addEventListener("keydown", e => {
-
-  if (e.key === "Enter") {
-
-    e.preventDefault();
-
-    searchLocation(
-      pickupSearch.value,
-      "pickup"
-    );
-  }
-});
-
-
-dropoffSearch.addEventListener("keydown", e => {
-
-  if (e.key === "Enter") {
-
-    e.preventDefault();
-
-    searchLocation(
-      dropoffSearch.value,
-      "dropoff"
-    );
-  }
-});
-
-
-// ======================================================
-// MAP CLICK — MANUAL POINT FIXING
-// ======================================================
-
-let mapSelectionMode = null;
-
-pickupInput.addEventListener("focus", () => {
-  mapSelectionMode = "pickup";
-});
-
-dropoffInput.addEventListener("focus", () => {
-  mapSelectionMode = "dropoff";
-});
-
-map.on("click", event => {
-
-  if (mapSelectionMode === "pickup") {
-
-    setPickupMarker(
-      event.latlng.lat,
-      event.latlng.lng,
-      "Pickup"
-    );
-
-    pickupSelected.textContent =
-      "Pickup point selected manually.";
-
-  }
-
-  if (mapSelectionMode === "dropoff") {
-
-    setDropoffMarker(
-      event.latlng.lat,
-      event.latlng.lng,
-      "Drop-off"
-    );
-
-    dropoffSelected.textContent =
-      "Drop-off point selected manually.";
-  }
-
-  fitMapToPoints();
-});
-
-
-// ======================================================
-// HELPERS
-// ======================================================
-
-function showMessage(element, text, type) {
-
-  element.textContent = text;
-  element.className =
-    "message " + type;
-
-  element.style.display = "block";
-}
-
-
-function clearMessage(element) {
-
-  element.style.display = "none";
-}
-
-
-function clearForm() {
-
-  tripIdInput.value = "";
-
-  pickupInput.value = "";
-  dropoffInput.value = "";
-
-  driverNameInput.value = "";
-  phoneInput.value = "";
-  vehicleInput.value = "";
-  vehicleColorInput.value = "";
-  plateInput.value = "";
-  ratingInput.value = "";
-
-  statusInput.value = "Ready";
-
-  pickupSearch.value = "";
-  dropoffSearch.value = "";
-
-  pickupLatInput.value = "";
-  pickupLngInput.value = "";
-  dropoffLatInput.value = "";
-  dropoffLngInput.value = "";
-
-  pickupSelected.textContent =
-    "No pickup point selected.";
-
-  dropoffSelected.textContent =
-    "No drop-off point selected.";
-
-  if (pickupMarker) {
-    map.removeLayer(pickupMarker);
-    pickupMarker = null;
-  }
-
-  if (dropoffMarker) {
-    map.removeLayer(dropoffMarker);
-    dropoffMarker = null;
-  }
-
-  if (driverMarker) {
-    map.removeLayer(driverMarker);
-    driverMarker = null;
-  }
-
-  document.getElementById("driverLink").textContent = "—";
-  document.getElementById("teacherLink").textContent = "—";
-
-  map.setView(
-    [24.8607, 67.0011],
-    12
-  );
-}
-
-
-function escapeHtml(value) {
-
-  if (value === undefined || value === null) {
-    return "";
-  }
-
-  return String(value)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#039;");
-}
-
-
-// ======================================================
-// AUTH
-// ======================================================
-
-loginBtn.addEventListener("click", async () => {
-
-  clearMessage(loginMessage);
-
-  try {
-
-    await signInWithEmailAndPassword(
-      auth,
-      emailInput.value.trim(),
-      passwordInput.value
-    );
-
-  } catch (error) {
-
-    showMessage(
-      loginMessage,
-      error.message,
-      "error"
-    );
-  }
-});
-
-
-logoutBtn.addEventListener("click", async () => {
-
-  await signOut(auth);
-});
-
-
-onAuthStateChanged(auth, async user => {
-
-  if (!user) {
-
-    loginSection.style.display = "block";
-    adminSection.style.display = "none";
-    logoutBtn.style.display = "none";
-
-    return;
-  }
-
-  if (user.uid !== ADMIN_UID) {
-
-    await signOut(auth);
-
-    showMessage(
-      loginMessage,
-      "This account is not authorized as Admin.",
-      "error"
-    );
-
-    return;
-  }
-
-  loginSection.style.display = "none";
-  adminSection.style.display = "block";
-  logoutBtn.style.display = "block";
-
-  await restoreCurrentTrip();
-
-  startHistoryListener();
-});
-
-
-// ======================================================
-// CURRENT ADMIN TRIP
-// ======================================================
-
-let currentLoadedTripId = null;
-let tripListener = null;
-
-
-async function setCurrentAdminTrip(tripId) {
-
-  await update(
-    ref(database, "adminState"),
-    {
-      lastTripId: tripId,
-      updatedAt: Date.now()
-    }
-  );
-
-  localStorage.setItem(
-    "lastTripId",
-    tripId
-  );
-}
-
-
-async function clearCurrentAdminTrip() {
-
-  await update(
-    ref(database, "adminState"),
-    {
-      lastTripId: null,
-      updatedAt: Date.now()
-    }
-  );
-
-  localStorage.removeItem("lastTripId");
-}
-
-
-async function restoreCurrentTrip() {
-
-  let tripId = null;
-
-  const params =
-    new URLSearchParams(
-      window.location.search
-    );
-
-  if (params.get("trip")) {
-
-    tripId =
-      params.get("trip");
-
-  } else {
-
-    try {
-
-      const snapshot =
-        await get(
-          ref(database, "adminState/lastTripId")
-        );
-
-      if (snapshot.exists()) {
-        tripId = snapshot.val();
-      }
-
-    } catch (error) {
-      console.error(error);
-    }
-
-    if (!tripId) {
-
-      tripId =
-        localStorage.getItem(
-          "lastTripId"
-        );
-    }
-  }
-
-  if (tripId) {
-
-    await loadTrip(tripId);
-
-  } else {
-
-    document.getElementById(
-      "currentTripStatus"
-    ).textContent =
-      "No current trip. Click + New Trip to create one.";
-  }
-}
-
-
-// ======================================================
-// NEW TRIP
-// ======================================================
-
-document
-  .getElementById("newTripBtn")
-  .addEventListener("click", async () => {
-
-    const confirmed =
-      confirm(
-        "Start a new trip? The previous completed trips will remain in history."
-      );
-
-    if (!confirmed) {
-      return;
-    }
-
-    if (tripListener) {
-      tripListener();
-      tripListener = null;
-    }
-
-    await clearCurrentAdminTrip();
-
-    window.history.replaceState(
-      {},
-      "",
-      window.location.pathname
-    );
-
-    clearForm();
-
-    currentLoadedTripId = null;
-
-    document.getElementById(
-      "currentTripStatus"
-    ).textContent =
-      "New trip ready. Enter the trip details and select pickup/drop-off locations.";
-
-    clearMessage(saveMessage);
-    clearMessage(controlMessage);
-  });
-
-
-// ======================================================
-// LOAD EXISTING TRIP
-// ======================================================
-
-document
-  .getElementById("loadExistingBtn")
-  .addEventListener("click", async () => {
-
-    const id =
-      document
-        .getElementById("existingTripId")
-        .value
-        .trim();
-
-    if (!id) {
-      alert("Enter a Trip ID.");
-      return;
-    }
-
-    await loadTrip(id);
-  });
-
-
-// ======================================================
-// LOAD TRIP
-// ======================================================
-
-async function loadTrip(tripId) {
-
-  try {
-
-    const snapshot =
-      await get(
-        ref(
-          database,
-          "trips/" + tripId
-        )
-      );
-
-    if (!snapshot.exists()) {
-
-      alert(
-        "Trip " +
-        tripId +
-        " was not found."
-      );
-
-      return;
-    }
-
-    const data = snapshot.val();
-
-    currentLoadedTripId = tripId;
-
-    tripIdInput.value = tripId;
-
-    pickupInput.value =
-      data.pickup ||
-      data.pickupLocationName ||
-      "";
-
-    dropoffInput.value =
-      data.dropoff ||
-      data.dropOff ||
-      data.dropoffLocationName ||
-      "";
-
-    driverNameInput.value =
-      data.driverName || "";
-
-    phoneInput.value =
-      data.phone || "";
-
-    vehicleInput.value =
-      data.vehicle || "";
-
-    vehicleColorInput.value =
-      data.vehicleColor || "";
-
-    plateInput.value =
-      data.plate || "";
-
-    ratingInput.value =
-      data.rating || "";
-
-    statusInput.value =
-      data.status || "Ready";
-
-
-    // -----------------------------------------------
-    // PICKUP COORDINATES
-    // -----------------------------------------------
-
-    const pickupLat =
-      data.pickupLat ??
-      data.pickupLatitude ??
-      data.pickupLocation?.lat;
-
-    const pickupLng =
-      data.pickupLng ??
-      data.pickupLongitude ??
-      data.pickupLocation?.lng;
-
-
-    // -----------------------------------------------
-    // DROP-OFF COORDINATES
-    // -----------------------------------------------
-
-    const dropoffLat =
-      data.dropoffLat ??
-      data.dropoffLatitude ??
-      data.dropOffLatitude ??
-      data.dropoffLocation?.lat ??
-      data.dropOffLocation?.lat;
-
-    const dropoffLng =
-      data.dropoffLng ??
-      data.dropoffLongitude ??
-      data.dropOffLongitude ??
-      data.dropoffLocation?.lng ??
-      data.dropOffLocation?.lng;
-
-
-    if (
-      typeof pickupLat === "number" &&
-      typeof pickupLng === "number"
-    ) {
-
-      setPickupMarker(
-        pickupLat,
-        pickupLng,
-        "Pickup"
-      );
-
-      pickupSelected.textContent =
-        pickupInput.value ||
-        "Pickup point loaded.";
-    }
-
-
-    if (
-      typeof dropoffLat === "number" &&
-      typeof dropoffLng === "number"
-    ) {
-
-      setDropoffMarker(
-        dropoffLat,
-        dropoffLng,
-        "Drop-off"
-      );
-
-      dropoffSelected.textContent =
-        dropoffInput.value ||
-        "Drop-off point loaded.";
-    }
-
-
-    // -----------------------------------------------
-    // DRIVER LIVE LOCATION
-    // -----------------------------------------------
-
-    if (
-      data.location &&
-      typeof data.location.lat === "number" &&
-      typeof data.location.lng === "number"
-    ) {
-
-      setDriverMarker(
-        data.location.lat,
-        data.location.lng
-      );
-    }
-
-
-    fitMapToPoints();
-
-    await setCurrentAdminTrip(tripId);
-
-    const url =
-      window.location.pathname +
-      "?trip=" +
-      encodeURIComponent(tripId);
-
-    window.history.replaceState(
-      {},
-      "",
-      url
-    );
-
-
-    updateLinks(tripId);
-
-    document.getElementById(
-      "currentTripStatus"
-    ).textContent =
-      "Current trip: " +
-      tripId +
-      " — " +
-      (data.status || "Ready");
-
-
-    startTripWatcher(tripId);
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "Unable to load trip: " +
-      error.message
-    );
-  }
-}
-
-
-// ======================================================
-// SAVE / CREATE TRIP
-// ======================================================
-
-document
-  .getElementById("saveTripBtn")
-  .addEventListener("click", saveTrip);
-
-
-async function saveTrip() {
-
-  clearMessage(saveMessage);
-
-  const tripId =
-    tripIdInput.value.trim();
-
-  const pickup =
-    pickupInput.value.trim();
-
-  const dropoff =
-    dropoffInput.value.trim();
-
-  const pickupLat =
-    Number(pickupLatInput.value);
-
-  const pickupLng =
-    Number(pickupLngInput.value);
-
-  const dropoffLat =
-    Number(dropoffLatInput.value);
-
-  const dropoffLng =
-    Number(dropoffLngInput.value);
-
-
-  if (!tripId) {
-
-    showMessage(
-      saveMessage,
-      "Please enter a Trip ID.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  if (!pickup || !dropoff) {
-
-    showMessage(
-      saveMessage,
-      "Please select both pickup and drop-off locations.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  if (
-    !Number.isFinite(pickupLat) ||
-    !Number.isFinite(pickupLng) ||
-    !Number.isFinite(dropoffLat) ||
-    !Number.isFinite(dropoffLng)
-  ) {
-
-    showMessage(
-      saveMessage,
-      "Please select pickup and drop-off points on the map.",
-      "error"
-    );
-
-    return;
-  }
-
-
-  const tripData = {
-
-    status: statusInput.value || "Ready",
-
-    pickup: pickup,
-    dropoff: dropoff,
-
-    pickupLocation: {
-      lat: pickupLat,
-      lng: pickupLng
-    },
-
-    dropoffLocation: {
-      lat: dropoffLat,
-      lng: dropoffLng
-    },
-
-    pickupLat: pickupLat,
-    pickupLng: pickupLng,
-
-    dropoffLat: dropoffLat,
-    dropoffLng: dropoffLng,
-
-    driverName:
-      driverNameInput.value.trim(),
-
-    phone:
-      phoneInput.value.trim(),
-
-    vehicle:
-      vehicleInput.value.trim(),
-
-    vehicleColor:
-      vehicleColorInput.value.trim(),
-
-    plate:
-      plateInput.value.trim(),
-
-    rating:
-      ratingInput.value.trim(),
-
-    sharingActive: true,
-
-    updatedAt: Date.now()
-  };
-
-
-  try {
-
-    await update(
-      ref(
-        database,
-        "trips/" + tripId
-      ),
-      tripData
-    );
-
-    await setCurrentAdminTrip(tripId);
-
-    currentLoadedTripId = tripId;
-
-    const url =
-      window.location.pathname +
-      "?trip=" +
-      encodeURIComponent(tripId);
-
-    window.history.replaceState(
-      {},
-      "",
-      url
-    );
-
-
-    updateLinks(tripId);
-
-    showMessage(
-      saveMessage,
-      "Trip saved successfully.",
-      "success"
-    );
-
-
-    await loadTrip(tripId);
-
-  } catch (error) {
-
-    console.error(error);
-
-    showMessage(
-      saveMessage,
-      "Unable to save trip: " +
-      error.message,
-      "error"
-    );
-  }
-}
-
-
-// ======================================================
-// LIVE TRIP WATCHER
-// ======================================================
-
-function startTripWatcher(tripId) {
-
-  if (tripListener) {
-    tripListener();
-  }
-
-  tripListener =
-    onValue(
-      ref(
-        database,
-        "trips/" + tripId
-      ),
-      snapshot => {
-
-        if (!snapshot.exists()) {
-          return;
-        }
-
-        const data =
-          snapshot.val();
-
-
-        statusInput.value =
-          data.status || "Ready";
-
-
-        document.getElementById(
-          "currentTripStatus"
-        ).textContent =
-          "Current trip: " +
-          tripId +
-          " — " +
-          (data.status || "Ready");
-
-
-        if (
-          data.location &&
-          typeof data.location.lat === "number" &&
-          typeof data.location.lng === "number"
-        ) {
-
-          setDriverMarker(
-            data.location.lat,
-            data.location.lng
-          );
-
-          fitMapToPoints();
-        }
-
-
-        if (data.status === "Trip completed") {
-
-          document.getElementById(
-            "currentTripStatus"
-          ).textContent =
-            "Trip " +
-            tripId +
-            " — Trip completed";
-
-          document.getElementById(
-            "stopSharingBtn"
-          ).disabled = true;
-
-          document.getElementById(
-            "completeRideBtn"
-          ).disabled = true;
-        }
-
-      }
-    );
-}
-
-
-// ======================================================
-// DRIVER MARKER
-// ======================================================
-
-function setDriverMarker(lat, lng) {
-
-  if (driverMarker) {
-
-    driverMarker.setLatLng(
-      [lat, lng]
-    );
-
-  } else {
-
-    driverMarker =
-      L.marker(
-        [lat, lng]
-      ).addTo(map);
-
-    driverMarker.bindPopup(
-      "Driver's live location"
-    );
-  }
-}
-
-
-// ======================================================
-// TRACKING LINKS
-// ======================================================
-
-function updateLinks(tripId) {
-
-  const base =
-    window.location.origin +
-    window.location.pathname
-      .replace("admin.html", "");
-
-  const driverUrl =
-    base +
-    "driver.html?trip=" +
-    encodeURIComponent(tripId);
-
-  const teacherUrl =
-    base +
-    "?trip=" +
-    encodeURIComponent(tripId);
-
-
-  document.getElementById(
-    "driverLink"
-  ).textContent =
-    driverUrl;
-
-  document.getElementById(
-    "teacherLink"
-  ).textContent =
-    teacherUrl;
-}
-
-
-// ======================================================
-// STOP SHARING
-// ======================================================
-
-document
-  .getElementById("stopSharingBtn")
-  .addEventListener("click", async () => {
-
-    if (!currentLoadedTripId) {
-      return;
-    }
-
-    const confirmed =
-      confirm(
-        "Stop sharing the driver's location?"
-      );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-
-      await update(
-        ref(
-          database,
-          "trips/" +
-          currentLoadedTripId
-        ),
-        {
-          sharingActive: false,
-          sharingStoppedAt: Date.now()
-        }
-      );
-
-      showMessage(
-        controlMessage,
-        "Location sharing has been stopped.",
-        "success"
-      );
-
-    } catch (error) {
-
-      showMessage(
-        controlMessage,
-        error.message,
-        "error"
-      );
-    }
-  });
-
-
-// ======================================================
-// COMPLETE RIDE
-// ======================================================
-
-document
-  .getElementById("completeRideBtn")
-  .addEventListener("click", async () => {
-
-    if (!currentLoadedTripId) {
-      return;
-    }
-
-    const confirmed =
-      confirm(
-        "Mark this ride as completed?"
-      );
-
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-
-      await update(
-        ref(
-          database,
-          "trips/" +
-          currentLoadedTripId
-        ),
-        {
-          status: "Trip completed",
-          completedAt: Date.now(),
-          sharingActive: false,
-          updatedAt: Date.now()
-        }
-      );
-
-
-      await clearCurrentAdminTrip();
-
-
-      showMessage(
-        controlMessage,
-        "Ride completed. It remains available in Trip History.",
-        "success"
-      );
-
-
-      document.getElementById(
-        "stopSharingBtn"
-      ).disabled = true;
-
-      document.getElementById(
-        "completeRideBtn"
-      ).disabled = true;
-
-
-      document.getElementById(
-        "currentTripStatus"
-      ).textContent =
-        "Ride completed. Click + New Trip to start another trip.";
-
-    } catch (error) {
-
-      showMessage(
-        controlMessage,
-        error.message,
-        "error"
-      );
-    }
-  });
-
-
-// ======================================================
-// TRIP HISTORY
-// ======================================================
-
-let historyListener = null;
-
-
-function startHistoryListener() {
-
-  if (historyListener) {
-    historyListener();
-  }
-
-  historyListener =
-    onValue(
-      ref(database, "trips"),
-      snapshot => {
-
-        const history =
-          document.getElementById("history");
-
-        history.innerHTML = "";
-
-        if (!snapshot.exists()) {
-
-          history.textContent =
-            "No trips yet.";
-
-          return;
-        }
-
-
-        const trips = [];
-
-        snapshot.forEach(child => {
-
-          const data =
-            child.val();
-
-          trips.push({
-            id: child.key,
-            data: data
-          });
-        });
-
-
-        trips.sort((a, b) => {
-
-          const timeA =
-            a.data.updatedAt ||
-            a.data.completedAt ||
-            0;
-
-          const timeB =
-            b.data.updatedAt ||
-            b.data.completedAt ||
-            0;
-
-          return timeB - timeA;
-        });
-
-
-        trips.forEach(item => {
-
-          const data = item.data;
-
-          const div =
-            document.createElement("div");
-
-          div.className =
-            "history-item";
-
-          div.innerHTML = `
-
-            <strong>${escapeHtml(item.id)}</strong>
-
-            <div class="history-meta">
-              Status:
-              ${escapeHtml(data.status || "—")}
-            </div>
-
-            <div class="history-meta">
-              Pickup:
-              ${escapeHtml(data.pickup || "—")}
-            </div>
-
-            <div class="history-meta">
-              Drop-off:
-              ${escapeHtml(
-                data.dropoff ||
-                data.dropOff ||
-                "—"
-              )}
-            </div>
-
-            <div class="history-meta">
-              Driver:
-              ${escapeHtml(data.driverName || "—")}
-            </div>
-
-            <button
-              class="btn-blue load-history-btn"
-              data-trip="${escapeHtml(item.id)}"
-            >
-              Load Trip
-            </button>
-          `;
-
-          history.appendChild(div);
-        });
-
-
-        document
-          .querySelectorAll(".load-history-btn")
-          .forEach(button => {
-
-            button.addEventListener(
-              "click",
-              () => {
-
-                loadTrip(
-                  button.dataset.trip
-                );
-              }
-            );
-          });
-
-      }
-    );
-}
-
-
-// ======================================================
-// INITIAL BUTTON STATE
-// ======================================================
-
-document.getElementById(
-  "stopSharingBtn"
-).disabled = true;
-
-document.getElementById(
-  "completeRideBtn"
-).disabled = true;
-
-</script>
-
-</body>
-</html>
+    <input
+      id="vehicle"
+      placeholder="Example: Toyo
 ```
